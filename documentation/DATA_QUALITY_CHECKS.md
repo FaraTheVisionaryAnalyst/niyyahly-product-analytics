@@ -32,3 +32,22 @@ This dataset is synthetic and was created specifically for this
 portfolio project. The quality checks therefore validate the
 technical consistency of the generated dataset rather than the
 accuracy of real-world customer behavior.
+
+# Results
+
+### Users
+
+Total users: 3,000
+
+### Onboarding
+
+Overall onboarding completion rate: 73.07%
+
+### Event integrity
+
+Duplicate event IDs: 0
+
+Orphan events: 0
+
+valid event timestamps
+valid event properties

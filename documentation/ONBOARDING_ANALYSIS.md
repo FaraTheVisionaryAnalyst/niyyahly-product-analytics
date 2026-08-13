@@ -37,7 +37,8 @@ The onboarding journey was analyzed by:
 
 ### Overall onboarding completion
 
-
+users	started	completed	onboarding_completion_rate
+3000	3000	2192	0.73066666666666669
 
 ### Control vs Variant
 

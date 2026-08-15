@@ -49,7 +49,7 @@ WITH onboarding_events AS (
     )) AS onboarding_completed_at
 
   FROM
-    `niyyahly-product-analytics.niyyahly_analytics.fact_events`
+    `niyyahly-product-analytics.niyyahly_analytics.facts_events`
 
   GROUP BY
     user_id

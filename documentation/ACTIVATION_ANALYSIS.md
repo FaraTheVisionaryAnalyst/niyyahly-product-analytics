@@ -300,7 +300,26 @@ The **median** represents the middle user and is less affected by unusually long
 
 ### Result
 
-**To be calculated from BigQuery.**
+| Cohort | Activated Users | Average Minutes to Activation | Median Minutes to Activation |
+|---|---:|---:|---:|
+| Control | 456 | 46.35 | 44 |
+| Variant | 551 | 46.42 | 43 |
+
+The average time to activation was almost identical between the two cohorts:
+
+- Control: **46.35 minutes**
+- Variant: **46.42 minutes**
+
+The median time to activation was:
+
+- Control: **44 minutes**
+- Variant: **43 minutes**
+
+The variant therefore showed only a 1-minute difference in median time to activation.
+
+This suggests that the lower-friction onboarding experience was associated with a higher proportion of users reaching activation, but it did not materially change the time required for activated users to reach their first saved journal.
+
+This distinction is important: the primary difference between the cohorts appears to be **whether users reach activation**, rather than **how quickly activated users reach it**.
 
 ---
 

@@ -183,9 +183,9 @@ This metric answers:
 
 ### Result
 
-- Total users: 3000
-- Onboarding completers: 2192
-- Activated users: 1007
+- Total users: 3,000
+- Onboarding completers: 2,192
+- Activated users: 1,007
 - Activation rate among onboarding completers: **45.94%**
 
 
@@ -605,113 +605,4 @@ Based on the synthetic analysis, the lower-friction onboarding approach would be
 However, the next experiment should focus not only on onboarding completion but also on the transition from onboarding completion to the first reflection experience.
 
 ---
-
-# Limitations
-
-## Synthetic Data
-
-All data in this project is synthetic.
-
-The results should therefore be treated as an analytical case study rather than evidence about real Niyyahly users.
-
----
-
-## Experiment Interpretation
-
-Differences between control and variant should not automatically be interpreted as causal effects.
-
-A proper experiment evaluation would require additional statistical analysis and validation of the experimental design.
-
----
-
-## MBTI Interpretation
-
-MBTI familiarity is used as a segmentation variable.
-
-Differences between users who know and do not know their MBTI type should not be interpreted as evidence that MBTI familiarity causes activation.
-
----
-
-## Timestamp Quality Review
-
-During development, unusually long signup-to-activation times were identified during data quality analysis.
-
-The raw V1 event data showed that signup events were concentrated near the beginning of the day while subsequent reflection activity frequently occurred much later.
-
-The SQL calculations were technically correct, but this synthetic timestamp pattern created an unrealistic elapsed-time distribution.
-
-The event timestamps were therefore regenerated to provide more realistic product-session timing.
-
-The timestamp regeneration preserved:
-
-* 3,000 users
-* 110,519 events
-* User IDs
-* Event IDs
-* Session IDs
-* Event names
-* Platform information
-* App versions
-* Event properties
-* Control and variant structure
-* Onboarding behavior
-* MBTI-related variables
-* Downstream behavioral events
-
-The activation population was preserved while the event timing was made more realistic.
-
-The original raw event table was retained as a backup during the migration and quality-control process.
-
----
-
-# Data Quality Checks
-
-Before analysis, the following checks were performed on `mart_activation`:
-
-### User grain
-
-The table contains one row per user.
-
-### Duplicate users
-
-No user appears more than once.
-
-### Activation sequence
-
-Activated users follow the expected event sequence:
-
-```text
-signup
-→ onboarding
-→ mood
-→ topic
-→ tone
-→ prompt
-→ journal
-```
-
-### Activation window
-
-Activated users complete the required journey within 24 hours of signup.
-
-### Timestamp validation
-
-The regenerated timestamps produce realistic elapsed times between signup and the core reflection journey.
-
----
-
-# Next Product Question
-
-The next question is:
-
-> **Do activated users return to Niyyahly at higher rates than users who do not activate?**
-
-This will be investigated using:
-
-* D1 retention
-* D7 retention
-* D14 retention
-* D30 retention
-
-The purpose is to determine whether reaching the core reflection experience is associated with stronger ongoing product engagement.
 

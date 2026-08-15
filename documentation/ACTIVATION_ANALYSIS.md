@@ -564,9 +564,3 @@ The purpose is to determine whether reaching the core reflection experience is a
 ```text
 Complete activation analysis documentation
 ````
-
-### Do NOT add the 33.57% result yet.
-
-Once the file looks like the complete structure above, **then** we will put your actual Query 1 result into the correct `## 1. Overall Activation Rate` section.
-
-You were right to flag this—the previous version you had was incomplete, so you couldn't follow my instruction.

@@ -427,7 +427,23 @@ The analysis examines whether users on different platforms show different activa
 
 ### Result
 
-**To be calculated from BigQuery.**
+| Platform | Users | Activated Users | Activation Rate |
+|---|---:|---:|---:|
+| Web | 284 | 100 | 35.21% |
+| Android | 1,253 | 419 | 33.44% |
+| iOS | 1,463 | 488 | 33.36% |
+
+Activation rates were relatively similar across platforms:
+
+- Web: **35.21%**
+- Android: **33.44%**
+- iOS: **33.36%**
+
+Web had the highest activation rate, but the difference between platforms was relatively small. The difference between Web and iOS was approximately **1.85 percentage points**.
+
+Based on this analysis, platform does not appear to be a major source of activation differences in the synthetic dataset.
+
+This segmentation is useful as a diagnostic check, but the relatively small differences do not provide strong evidence of a platform-specific activation problem.
 
 ---
 
@@ -447,6 +463,33 @@ The following stages will be compared:
 | Activated            | Users completing the activation definition |
 
 The purpose is to identify where the largest amount of user drop-off occurs.
+
+### Result
+
+| Funnel Stage | Users | Conversion from Previous Stage |
+|---|---:|---:|
+| Total users | 3,000 | — |
+| Onboarding completed | 2,192 | 73.07% |
+| Reached reflection | 1,008 | 45.99% |
+| Selected topic | 1,008 | 100.00% |
+| Selected tone | 1,008 | 100.00% |
+| Generated prompt | 1,008 | 100.00% |
+| Journal saved / Activated | 1,007 | 99.90% |
+
+The largest drop-off occurs between onboarding completion and reaching the reflection experience.
+
+Of the 2,192 users who completed onboarding, 1,008 reached the reflection flow. This represents a conversion rate of approximately **45.99%** from onboarding completion to reflection.
+
+Once users reached the reflection experience, progression through the remaining steps was very high:
+
+- Topic selection: **100.00%**
+- Tone selection: **100.00%**
+- Prompt generation: **100.00%**
+- Journal save / activation: **99.90%**
+
+This indicates that the primary activation bottleneck in the synthetic dataset is the transition from completed onboarding into the first reflection interaction, rather than the subsequent reflection steps.
+
+From a product perspective, this suggests that future investigation should focus on the transition between onboarding and the core reflection experience.
 
 ---
 

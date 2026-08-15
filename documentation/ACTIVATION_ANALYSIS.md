@@ -213,7 +213,24 @@ For each cohort:
 
 ### Result
 
-**To be calculated from BigQuery.**
+| Cohort | Users | Onboarding Completers | Onboarding Completion Rate | Activated Users | Activation Rate | Activation Rate Among Completers |
+|---|---:|---:|---:|---:|---:|---:|
+| Control | 1,505 | 1,039 | 69.04% | 456 | 30.30% | 43.89% |
+| Variant | 1,495 | 1,153 | 77.12% | 551 | 36.86% | 47.79% |
+
+The variant cohort had a higher activation rate than the control cohort:
+
+- Control activation rate: **30.30%**
+- Variant activation rate: **36.86%**
+- Difference: **6.56 percentage points**
+
+Activation among users who completed onboarding was also higher in the variant:
+
+- Control: **43.89%**
+- Variant: **47.79%**
+- Difference: **3.90 percentage points**
+
+These results indicate that the variant was associated with higher downstream activation as well as higher onboarding completion in this synthetic dataset.
 
 ---
 

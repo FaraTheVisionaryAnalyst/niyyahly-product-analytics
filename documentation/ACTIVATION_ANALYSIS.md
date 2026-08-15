@@ -258,7 +258,18 @@ This expresses the difference relative to the control cohort.
 
 ### Result
 
-**To be calculated from BigQuery.**
+- Control activation rate: **30.30%**
+- Variant activation rate: **36.86%**
+- Absolute lift: **6.56 percentage points**
+- Relative lift: **21.64%**
+
+The variant activation rate was 6.56 percentage points higher than the control activation rate.
+
+Relative to the control cohort, the variant showed a 21.64% higher activation rate.
+
+This suggests that the lower-friction onboarding experience was associated with stronger downstream activation in the synthetic dataset.
+
+The result should not be interpreted as proof of a causal product impact without further statistical evaluation of the experiment.
 
 ---
 

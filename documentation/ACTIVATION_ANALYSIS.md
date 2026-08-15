@@ -715,14 +715,3 @@ This will be investigated using:
 
 The purpose is to determine whether reaching the core reflection experience is associated with stronger ongoing product engagement.
 
-````
-
-## Then do only this
-
-1. Open `documentation/ACTIVATION_ANALYSIS.md`.
-2. **Select all existing content and replace it** with the complete version above.
-3. Commit it with:
-
-```text
-Complete activation analysis documentation
-````

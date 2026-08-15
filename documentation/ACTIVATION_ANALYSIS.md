@@ -161,7 +161,11 @@ This metric answers:
 
 ### Result
 
-**To be calculated from BigQuery.**
+- Total users: 3,000
+- Activated users: 1,007
+- Activation rate: **33.57%**
+
+This means that approximately 33.57% of users reached the defined Niyyahly core reflection experience within 24 hours of signup.
 
 ---
 

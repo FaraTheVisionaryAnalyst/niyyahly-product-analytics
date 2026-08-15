@@ -344,7 +344,23 @@ It avoids interpreting the entire elapsed period between signup and first produc
 
 ### Result
 
-**To be calculated from BigQuery.**
+| Cohort | Activated Users | Average Reflection Journey | Median Reflection Journey |
+|---|---:|---:|---:|
+| Control | 456 | 20.02 minutes | 20 minutes |
+| Variant | 551 | 19.89 minutes | 20 minutes |
+
+The reflection journey duration was very similar between the two cohorts.
+
+- Control average: **20.02 minutes**
+- Variant average: **19.89 minutes**
+- Control median: **20 minutes**
+- Variant median: **20 minutes**
+
+The difference in average reflection journey duration was approximately **0.12 minutes**, or about **7 seconds**.
+
+This suggests that the lower-friction onboarding experience was associated with more users reaching activation, but it did not materially change the duration of the core reflection journey among users who activated.
+
+This provides an important distinction between **activation volume** and **activation experience**: the variant appears to improve the number of users reaching the core experience, while the time spent progressing through that experience remains broadly similar.
 
 ---
 

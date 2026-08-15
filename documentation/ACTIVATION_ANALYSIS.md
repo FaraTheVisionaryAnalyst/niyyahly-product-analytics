@@ -186,7 +186,7 @@ This metric answers:
 - Total users: 3000
 - Onboarding completers: 2192
 - Activated users: 1007
-- Activation rate among onboarding completers: **0.459**
+- Activation rate among onboarding completers: **45.94%**
 
 
 This metric measures the proportion of users who reached the defined activation experience after successfully completing onboarding.
@@ -495,83 +495,114 @@ From a product perspective, this suggests that future investigation should focus
 
 # Experiment Analysis
 
-The main product comparison is:
 
-```text
-Control
-vs.
-Variant
-```
+The main experiment comparison is between the control and variant onboarding experiences.
 
-The analysis will examine whether the lower-friction onboarding approach is associated with improvement beyond onboarding completion.
+The variant cohort had:
 
-The key comparison is:
+- Higher onboarding completion: 77.12% vs. 69.04%
+- Higher activation: 36.86% vs. 30.30%
+- Higher activation among onboarding completers: 47.79% vs. 43.89%
+- Absolute activation lift: 6.56 percentage points
+- Relative activation lift: 21.64%
 
-```text
-Control onboarding
-        ↓
-Control activation
+However, the variant did not materially change the time required for activated users to reach their first saved journal.
 
-vs.
+Median time to activation was:
 
-Variant onboarding
-        ↓
-Variant activation
-```
+- Control: 44 minutes
+- Variant: 43 minutes
 
-The analysis will also compare:
-
-```text
-Activation among control onboarding completers
-
-vs.
-
-Activation among variant onboarding completers
-```
-
-This distinction is important because an onboarding redesign can increase the number of users who complete onboarding without necessarily increasing the proportion of those users who reach core product value.
+This suggests that the primary difference between the cohorts is the proportion of users who reach activation rather than the speed of activation once users enter the activation journey.
 
 ---
 
 # Initial Observations
 
-**To be completed after the BigQuery analysis.**
+Several patterns emerged from the activation analysis.
 
-The observations will focus on:
+### 1. The variant was associated with higher activation
 
-1. Overall activation
-2. Control vs. variant activation
-3. Activation among onboarding completers
-4. Activation lift
-5. Time to activation
-6. Reflection journey duration
-7. MBTI familiarity differences
-8. Platform differences
-9. Major funnel drop-off points
+Activation was 36.86% in the variant compared with 30.30% in the control.
 
-No conclusions will be written until the SQL results have been reviewed.
+This represents an absolute difference of 6.56 percentage points and a relative lift of 21.64%.
+
+### 2. The improvement was visible beyond onboarding completion
+
+Among users who completed onboarding, activation was:
+
+- Control: 43.89%
+- Variant: 47.79%
+
+This represents a 3.90 percentage-point difference.
+
+This suggests that the variant's higher activation was not solely explained by getting more users through onboarding.
+
+### 3. The variant did not materially reduce activation time
+
+Median time to activation was 44 minutes for control and 43 minutes for variant.
+
+Average time was also almost identical.
+
+Therefore, the main difference appears to be the number of users reaching activation rather than the speed of activated users.
+
+### 4. MBTI familiarity is associated with stronger activation
+
+Users who knew their MBTI had a 36.69% activation rate compared with 31.14% among users who did not.
+
+This is an association and does not establish causality.
+
+### 5. Platform differences were small
+
+Activation was relatively similar across Web, Android and iOS.
+
+Platform therefore does not appear to be a major activation issue in this synthetic dataset.
+
+### 6. The largest funnel drop-off occurs before the reflection experience
+
+The largest drop occurs between onboarding completion and reaching the first reflection interaction.
+
+Of 2,192 onboarding completers, only 1,008 reached the reflection experience.
+
+However, once users reached the reflection flow, almost all progressed through topic selection, tone selection, prompt generation and journal saving.
+
+This makes the transition from onboarding into the reflection experience the most important area for further investigation.
 
 ---
 
 # Product Interpretation
 
-**To be completed after the analysis.**
+The activation analysis suggests that reducing onboarding friction is associated with improved downstream activation in the synthetic NiyyahLy dataset.
 
-The final interpretation will answer:
+The variant produced higher onboarding completion and higher activation than the control.
 
-> Does the lower-friction onboarding experience appear to help more users reach Niyyahly's core reflection experience?
+However, the analysis also shows that the primary opportunity is not necessarily making the reflection process faster.
 
-The analysis will distinguish between:
+Once users reached the reflection experience, progression through the remaining steps was extremely high and reflection journey duration was almost identical between cohorts.
 
-### Onboarding performance
+The larger opportunity appears to be the transition between onboarding completion and the first reflection interaction.
 
-Whether users complete onboarding.
+### Product Opportunity
 
-### Activation performance
+A potential next product investigation is therefore:
 
-Whether users progress from onboarding into the core reflection experience.
+> Why do a large proportion of users who complete onboarding fail to start their first reflection?
 
-This distinction helps determine whether an improvement in onboarding actually translates into downstream product engagement.
+Possible areas for investigation include:
+
+- Whether the transition from onboarding to reflection is sufficiently clear
+- Whether users understand what to do next
+- Whether there is unnecessary friction between onboarding and the first reflection
+- Whether users need a stronger call-to-action
+- Whether the value of starting the first reflection is communicated clearly
+
+These are hypotheses for further investigation rather than conclusions supported directly by the current dataset.
+
+### Product Decision
+
+Based on the synthetic analysis, the lower-friction onboarding approach would be worth further experimentation because it is associated with higher onboarding completion and higher activation.
+
+However, the next experiment should focus not only on onboarding completion but also on the transition from onboarding completion to the first reflection experience.
 
 ---
 

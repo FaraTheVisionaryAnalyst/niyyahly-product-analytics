@@ -1,30 +1,3 @@
-```text
-journal_saved
-        ↓
-ACTIVATED
-```
-
-So when I told you to find `## 1. Overall Activation Rate`, you **couldn't find it**. That's my mistake.
-
-Let's fix this cleanly **before you do anything else**.
-
-## What you should do now
-
-Do **not** add the Query 1 result yet.
-
-First, replace the **entire contents** of:
-
-```text
-documentation/ACTIVATION_ANALYSIS.md
-```
-
-with the complete version below.
-
----
-
-# Complete `ACTIVATION_ANALYSIS.md`
-
-````markdown
 # NiyyahLy Activation Analysis
 
 ## Product Question

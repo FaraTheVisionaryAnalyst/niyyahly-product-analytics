@@ -378,7 +378,22 @@ Other differences between the groups may contribute to the observed relationship
 
 ### Result
 
-**To be calculated from BigQuery.**
+| MBTI Familiarity | Users | Onboarding Completers | Onboarding Completion Rate | Activated Users | Activation Rate |
+|---|---:|---:|---:|---:|---:|
+| Does not know MBTI | 1,689 | 1,179 | 69.80% | 526 | 31.14% |
+| Knows MBTI | 1,311 | 1,013 | 77.27% | 481 | 36.69% |
+
+Users who already knew their MBTI had a higher activation rate than users who did not:
+
+- Does not know MBTI: **31.14%**
+- Knows MBTI: **36.69%**
+- Difference: **5.55 percentage points**
+
+The same pattern was observed during onboarding. Users who knew their MBTI had a higher onboarding completion rate than users who did not know their MBTI.
+
+This suggests that MBTI familiarity is associated with stronger progression through both onboarding and activation in the synthetic dataset.
+
+However, this should not be interpreted as evidence that MBTI familiarity causes higher activation. MBTI familiarity may be related to other user characteristics or behaviors that are not controlled for in this analysis.
 
 ---
 

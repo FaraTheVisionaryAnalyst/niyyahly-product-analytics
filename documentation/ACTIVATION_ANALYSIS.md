@@ -1,5 +1,3 @@
-Ah — **now I see the problem.** You're right to stop. The `ACTIVATION_ANALYSIS.md` file you currently have is **incomplete**. It ends in the middle of the Activation Funnel section:
-
 ```text
 journal_saved
         ↓

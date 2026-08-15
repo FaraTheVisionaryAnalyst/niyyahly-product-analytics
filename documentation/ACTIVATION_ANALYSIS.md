@@ -183,7 +183,13 @@ This metric answers:
 
 ### Result
 
-**To be calculated from BigQuery.**
+- Total users: 3000
+- Onboarding completers: 2192
+- Activated users: 1007
+- Activation rate among onboarding completers: **0.459**
+
+
+This metric measures the proportion of users who reached the defined activation experience after successfully completing onboarding.
 
 ---
 

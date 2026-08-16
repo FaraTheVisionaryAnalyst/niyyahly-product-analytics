@@ -343,7 +343,37 @@ Users who activate may differ from non-activated users in other characteristics 
 
 Does retention differ between users who already know their MBTI type and users who do not?
 
-**To be calculated from BigQuery.**
+# Retention by MBTI Familiarity
+
+## Product Question
+
+Does retention differ between users who already know their MBTI type and users who do not?
+
+---
+
+## Result
+
+| MBTI Familiarity | Users | D1 Retention | D7 Retention | D14 Retention | D30 Retention |
+|---|---:|---:|---:|---:|---:|
+| Do not know MBTI | 1,689 | 10.42% | 9.00% | 5.92% | 3.73% |
+| Know MBTI | 1,311 | 12.05% | 10.98% | 8.16% | 4.35% |
+
+Users who already knew their MBTI had higher retention across all measured retention windows.
+
+The absolute differences were:
+
+- D1: **+1.63 percentage points**
+- D7: **+1.98 percentage points**
+- D14: **+2.24 percentage points**
+- D30: **+0.72 percentage points**
+
+The difference was largest at D14, where retention was 8.16% among users who knew their MBTI compared with 5.92% among users who did not.
+
+The relationship is relatively small compared with the much larger retention difference observed between activated and non-activated users.
+
+This suggests that MBTI familiarity may be associated with slightly stronger retention, but it does not appear to be the primary retention driver in this analysis.
+
+The result should be interpreted as an association rather than evidence that MBTI familiarity causes higher retention.
 
 ---
 

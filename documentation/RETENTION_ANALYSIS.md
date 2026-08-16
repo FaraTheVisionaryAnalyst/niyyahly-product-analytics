@@ -90,9 +90,25 @@ Further cohort and activation analysis is required to understand whether the onb
 
 ---
 
-# Retention Among Activated Users
+## Result
 
-**To be calculated from BigQuery.**
+| User Group | Users | D1 Retention | D7 Retention | D14 Retention | D30 Retention |
+|---|---:|---:|---:|---:|---:|
+| Activated | 1,007 | 24.83% | 21.25% | 13.90% | 8.34% |
+| Not activated | 1,993 | 4.21% | 4.11% | 3.36% | 1.81% |
+
+Users who reached activation had substantially higher retention than users who did not activate across every measured retention window.
+
+For example:
+
+- D1 retention was **24.83%** among activated users compared with **4.21%** among non-activated users.
+- D7 retention was **21.25%** compared with **4.11%**.
+- D14 retention was **13.90%** compared with **3.36%**.
+- D30 retention was **8.34%** compared with **1.81%**.
+
+This represents a strong association between reaching the core NiyyahLy reflection experience and subsequent engagement.
+
+However, this analysis does not establish that activation causes retention. Users who activate may differ from non-activated users in other ways that influence their likelihood of returning.
 
 ---
 

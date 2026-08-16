@@ -128,6 +128,42 @@ The SQL used for the retention analysis is stored in:
 ```text
 sql/05_retention/
 ```
+The retention SQL is separated into two stages:
+
+1. Create the analytical table
+
+The mart_retention table is created from the user and event data.
+
+```text
+sql/05_retention/01_create_mart_retention.sql
+```
+
+This SQL transforms the event-level data into a one-row-per-user retention table containing:
+
+User attributes
+Signup information
+D1 retention flag
+D7 retention flag
+D14 retention flag
+D30 retention flag
+2. Analyze retention
+
+The retention analysis queries are stored in:
+
+```text
+sql/05_retention/02_retention_analysis.sql
+```
+
+The analysis SQL covers:
+
+Overall retention
+Retention by experiment cohort
+Retention by activation status
+Retention by MBTI familiarity
+Retention by platform
+Retention by onboarding path
+
+The analysis queries use mart_retention as the primary analytical table.
 ---
 
 # Data Quality Validation
@@ -410,26 +446,6 @@ Overall, platform does not appear to be a major driver of retention differences 
 This analysis is a segmentation analysis and does not establish that platform causes differences in retention.
 
 ---
-
-# Retention by Onboarding Path
-
-## Product Question
-
-Does retention differ across the different onboarding paths?
-
-The onboarding paths include:
-
-* `mandatory_test`
-* `test_or_skip`
-* `self_select`
-
-Important interpretation note:
-
-`onboarding_path` is not an independent randomized experiment dimension.
-
-As identified during the onboarding analysis, the paths are connected to the control and variant onboarding experiences.
-
-Therefore, differences in retention between onboarding paths should be interpreted as behavioral associations rather than causal effects.
 
 # Retention by Onboarding Path
 

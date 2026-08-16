@@ -84,9 +84,27 @@ Further cohort and activation analysis is required to understand whether the onb
 
 ---
 
-# Retention by Experiment Cohort
+## Result
 
-**To be calculated from BigQuery.**
+| Cohort | Users | D1 Retention | D7 Retention | D14 Retention | D30 Retention |
+|---|---:|---:|---:|---:|---:|
+| Control | 1,505 | 8.84% | 8.50% | 5.91% | 3.19% |
+| Variant | 1,495 | 13.44% | 11.24% | 7.89% | 4.82% |
+
+The variant cohort had higher retention than the control cohort across every measured retention window.
+
+Absolute differences were:
+
+- D1: **+4.61 percentage points**
+- D7: **+2.73 percentage points**
+- D14: **+1.98 percentage points**
+- D30: **+1.63 percentage points**
+
+The largest absolute difference occurred at D1, where retention was 13.44% for the variant compared with 8.84% for the control.
+
+The retention advantage remained visible through D30, although the difference became smaller over time.
+
+These results show an association between the lower-friction onboarding experience and stronger subsequent retention in the synthetic dataset. They should not yet be interpreted as proof of a causal effect.
 
 ---
 

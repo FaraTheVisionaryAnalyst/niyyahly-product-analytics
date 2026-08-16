@@ -377,7 +377,30 @@ The result should be interpreted as an association rather than evidence that MBT
 
 Does retention differ across Web, Android and iOS?
 
-**To be calculated from BigQuery.**
+---
+
+## Result
+
+| Platform | Users | D1 Retention | D7 Retention | D14 Retention | D30 Retention |
+|---|---:|---:|---:|---:|---:|
+| Android | 1,253 | 11.41% | 9.58% | 7.50% | 3.67% |
+| iOS | 1,463 | 11.21% | 9.84% | 6.63% | 4.17% |
+| Web | 284 | 9.51% | 11.27% | 5.63% | 4.58% |
+
+Retention was broadly similar across platforms, with no clear or consistent platform-specific retention problem.
+
+The platform with the highest retention varied by retention window:
+
+- D1: Android at **11.41%**
+- D7: Web at **11.27%**
+- D14: Android at **7.50%**
+- D30: Web at **4.58%**
+
+The Web population is substantially smaller than the Android and iOS populations, with only 284 users. Therefore, the higher Web retention observed at some later windows should be interpreted cautiously.
+
+Overall, platform does not appear to be a major driver of retention differences in this synthetic dataset.
+
+This analysis is a segmentation analysis and does not establish that platform causes differences in retention.
 
 ---
 

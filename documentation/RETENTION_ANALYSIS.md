@@ -127,7 +127,7 @@ The SQL used for the retention analysis is stored in:
 
 ```text
 sql/05_retention/
-
+```
 ---
 
 # Data Quality Validation

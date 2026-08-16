@@ -608,7 +608,7 @@ The current journey can be summarized as:
 334 D1 retained
         ↓
 120 D30 retained
-
+````
 ---
 
 # Product Interpretation

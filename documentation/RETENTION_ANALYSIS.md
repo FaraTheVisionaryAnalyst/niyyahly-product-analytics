@@ -121,6 +121,13 @@ journal_saved
 
 The resulting table contains one row per user and provides the D1, D7, D14 and D30 retention flags.
 
+# SQL Analysis
+
+The SQL used for the retention analysis is stored in:
+
+```text
+sql/05_retention/
+
 ---
 
 # Data Quality Validation

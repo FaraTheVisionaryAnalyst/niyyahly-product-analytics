@@ -30,6 +30,12 @@ The retained activity event is:
 
 This event was selected because saving a journal represents meaningful interaction with NiyyahLy's core reflection experience rather than simply opening the application.
 
+Retention is calculated using calendar days after signup, not a rolling 24-hour window.
+
+For example, D1 represents whether the user had a `journal_saved` event on the calendar day one day after their signup date.
+
+D7, D14 and D30 follow the same calendar-day logic.
+
 ---
 
 ## Retention Windows

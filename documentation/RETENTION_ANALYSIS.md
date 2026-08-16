@@ -424,7 +424,46 @@ As identified during the onboarding analysis, the paths are connected to the con
 
 Therefore, differences in retention between onboarding paths should be interpreted as behavioral associations rather than causal effects.
 
-**To be calculated from BigQuery.**
+# Retention by Onboarding Path
+
+## Product Question
+
+Does retention differ across the different onboarding paths?
+
+The onboarding paths analyzed are:
+
+- `mandatory_test`
+- `self_select`
+- `test_or_skip`
+
+---
+
+## Result
+
+| Onboarding Path | Users | D1 Retention | D7 Retention | D14 Retention | D30 Retention |
+|---|---:|---:|---:|---:|---:|
+| `mandatory_test` | 1,505 | 8.84% | 8.50% | 5.91% | 3.19% |
+| `self_select` | 649 | 14.64% | 13.25% | 9.40% | 5.55% |
+| `test_or_skip` | 846 | 12.53% | 9.69% | 6.74% | 4.26% |
+
+Users in the `self_select` path had the highest observed retention across every measured retention window.
+
+Compared with the `mandatory_test` path:
+
+- D1 retention was **5.80 percentage points higher**
+- D7 retention was **4.75 percentage points higher**
+- D14 retention was **3.49 percentage points higher**
+- D30 retention was **2.36 percentage points higher**
+
+The `test_or_skip` path also had higher retention than `mandatory_test` across every measured retention window.
+
+However, onboarding path is not an independent randomized experiment dimension. The `mandatory_test` path corresponds to the control experience, while `self_select` and `test_or_skip` occur within the variant experience.
+
+In addition, users may have selected different paths based on their own preferences or familiarity with MBTI.
+
+Therefore, these results should be interpreted as descriptive associations rather than evidence that a particular onboarding path causes higher retention.
+
+The results suggest that the lower-friction variant paths are associated with stronger retention, while also highlighting the need to account for self-selection when interpreting the difference between individual onboarding paths.
 
 ---
 

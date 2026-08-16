@@ -469,17 +469,145 @@ The results suggest that the lower-friction variant paths are associated with st
 
 # Initial Observations
 
-**To be completed after the remaining retention segmentation analyses.**
+Several important patterns emerged from the retention analysis.
 
-The final observations will focus on:
+## 1. Retention declines substantially over time
 
-1. Overall retention trajectory
-2. Control vs. variant retention
-3. Activation and subsequent retention
-4. MBTI familiarity
-5. Platform
-6. Onboarding path
-7. The relationship between activation and long-term engagement
+Overall retention decreased from **11.13% on D1** to **4.00% on D30**.
+
+| Retention Window | Retention |
+|---|---:|
+| D1 | 11.13% |
+| D7 | 9.87% |
+| D14 | 6.90% |
+| D30 | 4.00% |
+
+This indicates that a relatively small proportion of signed-up users return to perform the defined core reflection action on later days.
+
+The largest product opportunity therefore appears to be improving the number of users who experience enough value to return after their initial interaction.
+
+---
+
+## 2. The largest problem occurs before users fully reach the core product experience
+
+The activation funnel identified a major drop between onboarding completion and reaching the reflection experience.
+
+Of the **2,192 users who completed onboarding**, only **1,008** reached the first reflection interaction.
+
+This represents approximately **45.99%** conversion from onboarding completion to reaching the reflection experience.
+
+However, once users reached the reflection flow, progression through the remaining steps was extremely high.
+
+This suggests that the primary activation opportunity is the transition from onboarding into the first reflection experience rather than the later reflection steps.
+
+---
+
+## 3. Activation is strongly associated with subsequent retention
+
+Activated users showed substantially higher retention than non-activated users across every retention window.
+
+| User Group | D1 | D7 | D14 | D30 |
+|---|---:|---:|---:|---:|
+| Activated | 24.83% | 21.25% | 13.90% | 8.34% |
+| Not activated | 4.21% | 4.11% | 3.36% | 1.81% |
+
+The difference is particularly large at D1 and remains visible through D30.
+
+This suggests that reaching the core reflection experience is strongly associated with continued engagement.
+
+However, this is an observational relationship and does not establish that activation itself causes higher retention.
+
+---
+
+## 4. The lower-friction onboarding variant was associated with stronger retention
+
+The variant cohort had higher retention than the control cohort at every measured retention window.
+
+| Cohort | D1 | D7 | D14 | D30 |
+|---|---:|---:|---:|---:|
+| Control | 8.84% | 8.50% | 5.91% | 3.19% |
+| Variant | 13.44% | 11.24% | 7.89% | 4.82% |
+
+The absolute retention difference was:
+
+- D1: **+4.61 percentage points**
+- D7: **+2.73 percentage points**
+- D14: **+1.98 percentage points**
+- D30: **+1.63 percentage points**
+
+This is directionally consistent with the earlier onboarding and activation findings, where the variant also had higher onboarding completion and activation.
+
+The results provide evidence that the lower-friction onboarding experience is associated with stronger downstream engagement in the synthetic dataset.
+
+However, causal interpretation would require further experiment validation and statistical testing.
+
+---
+
+## 5. MBTI familiarity showed a smaller positive association with retention
+
+Users who already knew their MBTI had slightly higher retention than users who did not know their MBTI.
+
+| MBTI Familiarity | D1 | D7 | D14 | D30 |
+|---|---:|---:|---:|---:|
+| Do not know MBTI | 10.42% | 9.00% | 5.92% | 3.73% |
+| Know MBTI | 12.05% | 10.98% | 8.16% | 4.35% |
+
+The difference was relatively small compared with the much larger difference between activated and non-activated users.
+
+This suggests that MBTI familiarity may be a useful segmentation variable, but the current data does not establish that MBTI familiarity itself is responsible for higher retention.
+
+---
+
+## 6. Platform does not appear to be a major retention driver
+
+Retention was broadly similar across Android, iOS and Web.
+
+The platform with the highest retention varied across the different retention windows.
+
+No consistent platform-specific retention problem was identified.
+
+The Web population was also substantially smaller than the Android and iOS populations, so differences observed for Web should be interpreted cautiously.
+
+---
+
+## 7. Users taking lower-friction onboarding paths showed higher observed retention
+
+The `self_select` path had the highest observed retention across all measured windows.
+
+| Onboarding Path | D1 | D7 | D14 | D30 |
+|---|---:|---:|---:|---:|
+| `mandatory_test` | 8.84% | 8.50% | 5.91% | 3.19% |
+| `self_select` | 14.64% | 13.25% | 9.40% | 5.55% |
+| `test_or_skip` | 12.53% | 9.69% | 6.74% | 4.26% |
+
+Both variant paths had higher observed retention than the mandatory-test control path.
+
+However, these paths should not be interpreted as three independent experimental groups.
+
+Users may have selected different paths based on their own preferences or characteristics, creating potential self-selection bias.
+
+Therefore, the strongest experiment comparison remains **control vs variant**, while onboarding-path results are treated as exploratory behavioral analysis.
+
+---
+
+## 8. The main product opportunity is improving activation before optimizing long-term retention
+
+The combined onboarding, activation and retention analysis suggests that the largest immediate opportunity is to increase the number of users who reach the core reflection experience.
+
+The current journey can be summarized as:
+
+```text
+3,000 signed-up users
+        ↓
+2,192 onboarding completers
+        ↓
+1,008 reach reflection
+        ↓
+1,007 activated
+        ↓
+334 D1 retained
+        ↓
+120 D30 retained
 
 ---
 

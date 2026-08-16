@@ -164,6 +164,7 @@ Retention by platform
 Retention by onboarding path
 
 The analysis queries use mart_retention as the primary analytical table.
+
 ---
 
 # Data Quality Validation

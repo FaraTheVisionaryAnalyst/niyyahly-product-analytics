@@ -269,7 +269,7 @@ ORDER BY
 --
 -- Business question:
 -- Does retention differ across the different onboarding
--- experiences?
+-- paths?
 --
 -- Important:
 -- onboarding_path is not an independent experiment dimension.

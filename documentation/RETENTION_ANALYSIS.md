@@ -343,12 +343,6 @@ Users who activate may differ from non-activated users in other characteristics 
 
 Does retention differ between users who already know their MBTI type and users who do not?
 
-# Retention by MBTI Familiarity
-
-## Product Question
-
-Does retention differ between users who already know their MBTI type and users who do not?
-
 ---
 
 ## Result

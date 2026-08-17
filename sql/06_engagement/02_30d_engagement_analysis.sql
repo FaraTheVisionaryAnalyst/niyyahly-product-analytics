@@ -432,3 +432,73 @@ SELECT
 
 FROM
   `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`;
+
+-- ============================================================
+-- QUERY 6: Post-Activation Engagement by Experiment Cohort
+-- ============================================================
+--
+-- Business question:
+-- Among activated users, does post-activation engagement
+-- differ between the control and variant onboarding cohorts?
+--
+-- Metrics:
+-- 1. Average active journal days
+-- 2. Median active journal days
+-- 3. Average longest journal streak
+-- 4. Median longest journal streak
+-- 5. Percentage active in at least 3 of 4 consistency periods
+-- 6. Percentage active in all 4 consistency periods
+--
+-- Population:
+-- Activated users only.
+--
+-- Important:
+-- This analysis evaluates post-activation engagement.
+-- It does not measure onboarding completion or activation.
+-- ============================================================
+
+
+SELECT
+
+  cohort,
+
+  COUNT(*) AS activated_users,
+
+  ROUND(
+    AVG(journal_active_days_30d),
+    2
+  ) AS average_active_journal_days,
+
+  APPROX_QUANTILES(
+    journal_active_days_30d,
+    100
+  )[OFFSET(50)] AS median_active_journal_days,
+
+  ROUND(
+    AVG(longest_journal_streak_30d),
+    2
+  ) AS average_longest_streak,
+
+  APPROX_QUANTILES(
+    longest_journal_streak_30d,
+    100
+  )[OFFSET(50)] AS median_longest_streak,
+
+  SAFE_DIVIDE(
+    COUNTIF(active_consistency_periods_30d >= 3),
+    COUNT(*)
+  ) AS pct_active_at_least_3_periods,
+
+  SAFE_DIVIDE(
+    COUNTIF(active_consistency_periods_30d = 4),
+    COUNT(*)
+  ) AS pct_active_all_4_periods
+
+FROM
+  `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`
+
+GROUP BY
+  cohort
+
+ORDER BY
+  cohort;

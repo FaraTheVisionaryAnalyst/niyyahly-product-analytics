@@ -368,3 +368,67 @@ SELECT
 
 FROM
   `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`;
+
+
+-- ============================================================
+-- QUERY 5: Overall Post-Activation Streak
+-- ============================================================
+--
+-- Business question:
+-- How strong are consecutive journaling behaviors among
+-- activated users during the 30 days following activation?
+--
+-- Metric:
+-- Longest consecutive journal-active day streak.
+--
+-- Population:
+-- All activated users.
+--
+-- Important:
+-- Users with no post-activation journal activity have
+-- a streak of 0.
+-- ============================================================
+
+
+SELECT
+
+  COUNT(*) AS activated_users,
+
+  ROUND(
+    AVG(longest_journal_streak_30d),
+    2
+  ) AS average_longest_streak,
+
+  APPROX_QUANTILES(
+    longest_journal_streak_30d,
+    100
+  )[OFFSET(50)] AS median_longest_streak,
+
+  MIN(longest_journal_streak_30d)
+    AS minimum_longest_streak,
+
+  MAX(longest_journal_streak_30d)
+    AS maximum_longest_streak,
+
+  SAFE_DIVIDE(
+    COUNTIF(longest_journal_streak_30d >= 1),
+    COUNT(*)
+  ) AS pct_with_at_least_1_day_streak,
+
+  SAFE_DIVIDE(
+    COUNTIF(longest_journal_streak_30d >= 2),
+    COUNT(*)
+  ) AS pct_with_at_least_2_day_streak,
+
+  SAFE_DIVIDE(
+    COUNTIF(longest_journal_streak_30d >= 3),
+    COUNT(*)
+  ) AS pct_with_at_least_3_day_streak,
+
+  SAFE_DIVIDE(
+    COUNTIF(longest_journal_streak_30d >= 5),
+    COUNT(*)
+  ) AS pct_with_at_least_5_day_streak
+
+FROM
+  `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`;

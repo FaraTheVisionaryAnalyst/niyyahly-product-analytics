@@ -187,16 +187,23 @@ ORDER BY
   user_id;
 
 -- ============================================================
--- QUERY 3: Active Weeks
+-- QUERY 3: Post-Activation Consistency Periods
 -- ============================================================
 --
 -- Business question:
--- Is journal activity distributed across the
--- 30-day post-activation period?
+-- Did activated users continue journaling across different
+-- parts of the 30-day period after activation?
+--
+-- The 30-day period is divided into four user-relative periods:
+--
+-- Period 1 = Days 1-7
+-- Period 2 = Days 8-14
+-- Period 3 = Days 15-21
+-- Period 4 = Days 22-30
 --
 -- Metric:
--- Number of distinct calendar weeks containing
--- at least one journal_saved event.
+-- Number of the four periods containing at least one
+-- journal_saved event.
 -- ============================================================
 
 
@@ -220,7 +227,13 @@ journal_days AS (
 
     u.user_id,
 
-    DATE(e.event_timestamp) AS journal_date
+    DATE(e.event_timestamp) AS journal_date,
+
+    DATE_DIFF(
+      DATE(e.event_timestamp),
+      DATE(u.first_journal_saved_at),
+      DAY
+    ) AS days_since_activation
 
   FROM
     activated_users u
@@ -241,16 +254,27 @@ journal_days AS (
     ) BETWEEN 1 AND 30
 ),
 
-user_week_activity AS (
+period_activity AS (
 
   SELECT
 
     user_id,
 
-    DATE_TRUNC(
-      journal_date,
-      WEEK(MONDAY)
-    ) AS activity_week
+    CASE
+
+      WHEN days_since_activation BETWEEN 1 AND 7
+        THEN 1
+
+      WHEN days_since_activation BETWEEN 8 AND 14
+        THEN 2
+
+      WHEN days_since_activation BETWEEN 15 AND 21
+        THEN 3
+
+      WHEN days_since_activation BETWEEN 22 AND 30
+        THEN 4
+
+    END AS consistency_period
 
   FROM
     journal_days
@@ -258,17 +282,17 @@ user_week_activity AS (
   GROUP BY
 
     user_id,
-    activity_week
+    consistency_period
 )
 
 SELECT
 
   user_id,
 
-  COUNT(*) AS active_weeks_30d
+  COUNT(*) AS active_consistency_periods_30d
 
 FROM
-  user_week_activity
+  period_activity
 
 GROUP BY
   user_id

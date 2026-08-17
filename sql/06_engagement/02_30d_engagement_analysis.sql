@@ -185,3 +185,93 @@ GROUP BY
 
 ORDER BY
   user_id;
+
+-- ============================================================
+-- QUERY 3: Active Weeks
+-- ============================================================
+--
+-- Business question:
+-- Is journal activity distributed across the
+-- 30-day post-activation period?
+--
+-- Metric:
+-- Number of distinct calendar weeks containing
+-- at least one journal_saved event.
+-- ============================================================
+
+
+WITH activated_users AS (
+
+  SELECT
+
+    user_id,
+    first_journal_saved_at
+
+  FROM
+    `niyyahly-product-analytics.niyyahly_analytics.mart_activation`
+
+  WHERE
+    activated = TRUE
+),
+
+journal_days AS (
+
+  SELECT DISTINCT
+
+    u.user_id,
+
+    DATE(e.event_timestamp) AS journal_date
+
+  FROM
+    activated_users u
+
+  INNER JOIN
+    `niyyahly-product-analytics.niyyahly_analytics.facts_events` e
+
+  ON
+    u.user_id = e.user_id
+
+  WHERE
+    e.event_name = 'journal_saved'
+
+    AND DATE_DIFF(
+      DATE(e.event_timestamp),
+      DATE(u.first_journal_saved_at),
+      DAY
+    ) BETWEEN 1 AND 30
+),
+
+user_week_activity AS (
+
+  SELECT
+
+    user_id,
+
+    DATE_TRUNC(
+      journal_date,
+      WEEK(MONDAY)
+    ) AS activity_week
+
+  FROM
+    journal_days
+
+  GROUP BY
+
+    user_id,
+    activity_week
+)
+
+SELECT
+
+  user_id,
+
+  COUNT(*) AS active_weeks_30d
+
+FROM
+  user_week_activity
+
+GROUP BY
+  user_id
+
+ORDER BY
+  user_id;

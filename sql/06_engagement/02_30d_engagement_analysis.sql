@@ -502,3 +502,105 @@ GROUP BY
 
 ORDER BY
   cohort;
+
+-- ============================================================
+-- QUERY 7: Cohort Engagement Differences
+-- ============================================================
+--
+-- Business question:
+-- How large are the observed differences in post-activation
+-- engagement between variant and control?
+--
+-- Variant is compared against control.
+-- ============================================================
+
+
+WITH cohort_metrics AS (
+
+  SELECT
+
+    cohort,
+
+    COUNT(*) AS activated_users,
+
+    AVG(journal_active_days_30d)
+      AS average_active_journal_days,
+
+    APPROX_QUANTILES(
+      journal_active_days_30d,
+      100
+    )[OFFSET(50)] AS median_active_journal_days,
+
+    AVG(longest_journal_streak_30d)
+      AS average_longest_streak,
+
+    APPROX_QUANTILES(
+      longest_journal_streak_30d,
+      100
+    )[OFFSET(50)] AS median_longest_streak,
+
+    SAFE_DIVIDE(
+      COUNTIF(active_consistency_periods_30d >= 3),
+      COUNT(*)
+    ) AS pct_active_at_least_3_periods,
+
+    SAFE_DIVIDE(
+      COUNTIF(active_consistency_periods_30d = 4),
+      COUNT(*)
+    ) AS pct_active_all_4_periods
+
+  FROM
+    `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`
+
+  GROUP BY
+    cohort
+)
+
+SELECT
+
+  MAX(
+    IF(cohort = 'variant', activated_users, NULL)
+  ) AS variant_activated_users,
+
+  MAX(
+    IF(cohort = 'control', activated_users, NULL)
+  ) AS control_activated_users,
+
+  MAX(
+    IF(cohort = 'variant', average_active_journal_days, NULL)
+  )
+  -
+  MAX(
+    IF(cohort = 'control', average_active_journal_days, NULL)
+  ) AS absolute_difference_avg_active_days,
+
+  MAX(
+    IF(cohort = 'variant', average_longest_streak, NULL)
+  )
+  -
+  MAX(
+    IF(cohort = 'control', average_longest_streak, NULL)
+  ) AS absolute_difference_avg_streak,
+
+  (
+    MAX(
+      IF(cohort = 'variant', pct_active_at_least_3_periods, NULL)
+    )
+    -
+    MAX(
+      IF(cohort = 'control', pct_active_at_least_3_periods, NULL)
+    )
+  ) * 100 AS absolute_difference_3_periods_pp,
+
+  (
+    MAX(
+      IF(cohort = 'variant', pct_active_all_4_periods, NULL)
+    )
+    -
+    MAX(
+      IF(cohort = 'control', pct_active_all_4_periods, NULL)
+    )
+  ) * 100 AS absolute_difference_all_4_periods_pp
+
+FROM
+  cohort_metrics;

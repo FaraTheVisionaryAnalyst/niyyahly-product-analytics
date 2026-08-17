@@ -299,3 +299,72 @@ GROUP BY
 
 ORDER BY
   user_id;
+
+-- ============================================================
+-- QUERY 4: Overall Post-Activation Engagement
+-- ============================================================
+--
+-- Business question:
+-- After activation, how frequently do users continue to
+-- use the journal during the following 30 days?
+--
+-- Population:
+-- All activated users.
+--
+-- Metrics:
+-- 1. Average distinct journal-active days
+-- 2. Median distinct journal-active days
+-- 3. Minimum and maximum active days
+-- 4. Percentage with at least 1 active day
+-- 5. Percentage with at least 3 active days
+-- 6. Percentage with at least 7 active days
+-- 7. Percentage with at least 10 active days
+--
+-- Important:
+-- These are engagement-frequency measures.
+-- They do NOT measure consecutive-day streaks.
+-- ============================================================
+
+
+SELECT
+
+  COUNT(*) AS activated_users,
+
+  ROUND(
+    AVG(journal_active_days_30d),
+    2
+  ) AS average_active_journal_days,
+
+  APPROX_QUANTILES(
+    journal_active_days_30d,
+    100
+  )[OFFSET(50)] AS median_active_journal_days,
+
+  MIN(journal_active_days_30d)
+    AS minimum_active_journal_days,
+
+  MAX(journal_active_days_30d)
+    AS maximum_active_journal_days,
+
+  SAFE_DIVIDE(
+    COUNTIF(journal_active_days_30d >= 1),
+    COUNT(*)
+  ) AS pct_active_at_least_1_day,
+
+  SAFE_DIVIDE(
+    COUNTIF(journal_active_days_30d >= 3),
+    COUNT(*)
+  ) AS pct_active_at_least_3_days,
+
+  SAFE_DIVIDE(
+    COUNTIF(journal_active_days_30d >= 7),
+    COUNT(*)
+  ) AS pct_active_at_least_7_days,
+
+  SAFE_DIVIDE(
+    COUNTIF(journal_active_days_30d >= 10),
+    COUNT(*)
+  ) AS pct_active_at_least_10_days
+
+FROM
+  `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`;

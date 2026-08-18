@@ -226,3 +226,92 @@ FROM
 ORDER BY
   cohort,
   milestone_day;
+
+-- ============================================================
+-- QUERY 4: Retention Difference Between Cohorts
+-- ============================================================
+--
+-- Business question:
+-- How large is the observed retention difference between
+-- variant and control among activated users?
+--
+-- Metric:
+-- Absolute difference in percentage points.
+--
+-- Important:
+-- These are observed cohort differences.
+-- They should not automatically be interpreted as causal
+-- effects of the onboarding experience.
+-- ============================================================
+
+WITH cohort_rates AS (
+
+  SELECT
+
+    cohort,
+
+    COUNT(*) AS activated_users,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d1 = 1),
+      COUNT(*)
+    ) AS d1_retention_rate,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d7 = 1),
+      COUNT(*)
+    ) AS d7_retention_rate,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d14 = 1),
+      COUNT(*)
+    ) AS d14_retention_rate,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d30 = 1),
+      COUNT(*)
+    ) AS d30_retention_rate
+
+  FROM
+    `niyyahly-product-analytics.niyyahly_analytics.mart_retention`
+
+  GROUP BY
+    cohort
+)
+
+SELECT
+
+  MAX(
+    IF(cohort = 'variant', activated_users, NULL)
+  ) AS variant_activated_users,
+
+  MAX(
+    IF(cohort = 'control', activated_users, NULL)
+  ) AS control_activated_users,
+
+  (
+    MAX(IF(cohort = 'variant', d1_retention_rate, NULL))
+    -
+    MAX(IF(cohort = 'control', d1_retention_rate, NULL))
+  ) * 100 AS d1_difference_pp,
+
+  (
+    MAX(IF(cohort = 'variant', d7_retention_rate, NULL))
+    -
+    MAX(IF(cohort = 'control', d7_retention_rate, NULL))
+  ) * 100 AS d7_difference_pp,
+
+  (
+    MAX(IF(cohort = 'variant', d14_retention_rate, NULL))
+    -
+    MAX(IF(cohort = 'control', d14_retention_rate, NULL))
+  ) * 100 AS d14_difference_pp,
+
+  (
+    MAX(IF(cohort = 'variant', d30_retention_rate, NULL))
+    -
+    MAX(IF(cohort = 'control', d30_retention_rate, NULL))
+  ) * 100 AS d30_difference_pp
+
+FROM
+  cohort_rates;

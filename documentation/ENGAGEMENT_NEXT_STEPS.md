@@ -2,17 +2,90 @@
 
 ## What the Current Analysis Shows
 
-The current analysis shows that users who reach activation
-continue to engage with the journal after activation.
+The current analysis evaluates post-activation engagement among
+users who reached activation.
 
-Post-activation engagement was evaluated using:
+Post-activation engagement is measured using:
 
 - Active journal days
 - Longest journal streak
 - Consistency across four post-activation periods
 
-The onboarding variant showed stronger sustained engagement
-than the control cohort.
+These metrics are intended to measure sustained product usage
+rather than simply whether a user returned on one specific
+retention milestone.
+
+---
+
+## Retention vs Engagement
+
+The project distinguishes between milestone retention and
+sustained engagement.
+
+### Retention
+
+Retention asks:
+
+> Did an activated user return and save a journal on D1, D7,
+> D14 or D30?
+
+This is useful for measuring return behavior at specific
+milestones.
+
+However, a user can be D30 retained after only saving a journal
+on the D30 date.
+
+Therefore D30 retention does not prove continuous usage.
+
+### Engagement
+
+Engagement asks:
+
+> Did the activated user continue using the journal throughout
+> the 30-day period?
+
+This is measured using:
+
+- Active journal days
+- Longest journal streak
+- Four-period consistency
+
+These metrics provide stronger evidence of sustained product
+usage.
+
+---
+
+## Current 30-Day Engagement Findings
+
+Among activated users:
+
+- Average active journal days: 4.67
+- Median active journal days: 5
+- Maximum active journal days: 12
+- 99.1% were active on at least one post-activation day
+- 86.0% were active on at least three days
+- 17.6% were active on at least seven days
+- 1.5% were active on at least ten days
+
+For streak behavior:
+
+- Average longest streak: 1.62 days
+- Median longest streak: 1 day
+- 49.7% achieved at least a 2-day streak
+- 10.8% achieved at least a 3-day streak
+- 0.2% achieved at least a 5-day streak
+
+These results suggest that most activated users return at
+least once, but sustained consecutive usage is much less common.
+
+This is an important distinction from milestone retention.
+
+---
+
+## Experiment Cohort Findings
+
+The variant cohort currently shows stronger sustained
+engagement than the control cohort.
 
 Among activated users:
 
@@ -21,123 +94,40 @@ Among activated users:
 - Absolute difference: +13.20 percentage points
 - Two-proportion z-test: z = 4.79
 
-This indicates a statistically significant difference in the
-synthetic experiment dataset.
+The synthetic dataset therefore shows a statistically significant
+difference between the two cohorts.
 
-However, this result should be interpreted as an observed
-cohort difference and not as proof that a specific product
+However, this should be interpreted as an observed experiment
+cohort difference rather than proof that a particular product
 feature caused the improvement.
 
 ---
 
-## What the Current Data Shows About Personalization
+## What the Current Data Cannot Explain
 
-The analysis also reconstructed the MBTI-related onboarding
-paths among activated users.
+The current dataset does not cleanly isolate the effect of
+personality-based prompt personalization.
 
-Among 1,007 activated users:
+In particular, `knows_mbti` indicates whether a user already knows
+their MBTI, but does not directly indicate whether a personalized
+reflection prompt was actually generated or shown.
 
-- 271 already knew their MBTI and completed self-selection
-- 210 already knew their MBTI and completed the personality test
-- 420 did not previously know their MBTI and completed the
-  personality test
-- 106 skipped the personality step
+Users may:
 
-This means:
+- already know their MBTI
+- complete the personality test
+- skip the personality test
+- select an MBTI
+- receive different onboarding experiences
 
-- 901 activated users were classified as having an MBTI
-  profile available for personalization
-- 106 activated users were classified as not personalized
-  because they explicitly skipped the personality step
-
-Therefore, `knows_mbti` alone should not be used as a proxy
-for personalization exposure.
-
-The analysis instead uses the observed onboarding path to
-infer whether an MBTI profile was available for the
-personalized reflection experience.
-
----
-
-## Exploratory Personalization Result
-
-Among activated users:
-
-| Personalization Group | Users | Average Active Journal Days | Active Across All 4 Periods |
-|---|---:|---:|---:|
-| Personalized | 901 | 4.64 | 24.31% |
-| Not personalized | 106 | 4.93 | 34.91% |
-
-In this synthetic dataset, the personalization-exposed group
-did not show higher post-activation engagement.
-
-The personalized group had:
-
-- 4.64 average active journal days
-- 24.31% active across all four consistency periods
-
-The non-personalized group had:
-
-- 4.93 average active journal days
-- 34.91% active across all four consistency periods
-
-Therefore, the observed difference is in the opposite
-direction from the original personalization hypothesis.
-
-However, this result should be treated as exploratory rather
-than as evidence that personalization reduces engagement.
-
-The non-personalized group contains only 106 users, compared
-with 901 personalized users.
-
-More importantly, personalization exposure was not randomly
-assigned.
-
-Users entered the personalized or non-personalized path
-through their onboarding behavior. Users who skip the
-personality step may differ from users who complete or provide
-their MBTI profile in motivation, preferences, engagement
-intent, or other characteristics.
-
-Therefore, the observed difference cannot establish that
-personalization caused higher or lower engagement.
-
----
-
-## What the Current Data Can and Cannot Explain
-
-The current data provides a useful signal about the relationship
-between MBTI profile availability and subsequent engagement.
-
-However, the dataset does not contain an explicit event such as:
-
-`personalized_prompt_delivered`
-
-or:
-
-`personality_context_used`
-
-Therefore, personalization exposure is inferred from the
-onboarding path rather than directly observed at the prompt
-level.
-
-The current analysis can therefore answer:
-
-> Do users classified as having an MBTI profile available for
-> personalization show different subsequent engagement?
-
-It cannot reliably answer:
-
-> Does using personality information inside the reflection
-> prompt cause higher engagement?
-
-The second question requires a controlled experiment.
+Therefore these variables should not be treated as direct
+experimental exposure measures for prompt personalization.
 
 ---
 
 ## Product Hypothesis
 
-The product hypothesis remains:
+The next product hypothesis is:
 
 > Users who receive reflection prompts personalized using their
 > personality profile and current mood will demonstrate stronger
@@ -148,10 +138,6 @@ The expected mechanism is that more personally relevant
 reflection prompts may make users feel more understood and
 increase their motivation to continue using the reflection
 experience.
-
-The current observational comparison does not confirm this
-hypothesis, but it also does not provide sufficient evidence
-to reject it causally.
 
 ---
 
@@ -171,19 +157,15 @@ Users receive a reflection prompt incorporating:
 - Personality information
 - Current mood
 
-The experiment should keep other parts of the experience
-as consistent as possible.
-
-Random assignment is important because it allows the analysis
-to compare otherwise similar users and isolate the effect of
-the personalized prompt experience more reliably.
+The experiment should keep other parts of the experience as
+consistent as possible.
 
 ---
 
 ## Required Instrumentation
 
-The product should explicitly record whether personalization
-was actually used.
+The product should explicitly record whether personalization was
+actually used.
 
 Recommended fields/events include:
 
@@ -198,135 +180,61 @@ Recommended fields/events include:
 This allows the analysis to distinguish between:
 
 1. User has personality information
-2. Personality information is available to the system
-3. Personality information was actually used
-4. Mood information was available
-5. Mood information was actually used
-6. The resulting prompt was personalized
-7. The user saved the resulting journal
-
-This instrumentation would remove the current ambiguity
-between having an MBTI profile and actually receiving a
-personalized prompt.
+2. Personality information was actually used
+3. Mood information was actually used
+4. The resulting prompt was personalized
 
 ---
 
 ## Primary Success Metric
 
-The primary success metric should be a sustained
-post-activation engagement measure.
+The primary success metric should be a sustained post-activation
+engagement measure.
 
-The recommended primary metric is:
+A strong candidate is:
 
 **Percentage of activated users active across all four
 post-activation periods.**
 
-The four periods are:
-
-- Days 1–7
-- Days 8–14
-- Days 15–21
-- Days 22–30
-
 This metric captures whether users continue returning
-throughout the 30-day period rather than simply returning
-once.
+throughout the 30-day period rather than simply returning once.
 
 Supporting metrics can include:
 
 - Active journal days
 - Longest journal streak
-- D1/D7/D14/D30 retention
+- D1/D7/D14/D30 milestone retention
 
 ---
 
-## Product Priorities
+## Decision Framework
 
-Based on the current analysis, there are two immediate
-product opportunities.
-
-### 1. Improve activation
-
-The largest early funnel loss occurs before users reach the
-core reflection experience.
-
-The priority is therefore to improve the transition from
-onboarding into the first meaningful reflection experience.
-
-### 2. Improve sustained engagement
-
-Once users activate, engagement is substantially stronger
-than among users who do not activate, but sustained usage
-remains limited.
-
-The 30-day engagement analysis shows:
-
-- Average active journal days: 4.67
-- Median active journal days: 5
-- 17.6% of activated users reached at least 7 active days
-- 1.5% reached at least 10 active days
-- Median longest streak: 1 day
-
-This suggests that increasing repeat usage and consistency
-is a more useful product goal than simply optimizing
-one-time return behavior.
-
----
-
-## Decision Framework for the Next Experiment
-
-If personalized prompts produce a meaningful improvement in
-sustained engagement:
+If personalization produces a meaningful improvement in sustained
+engagement:
 
 → Continue investing in personalized reflection.
 
-If personalization improves prompt interaction but does not
-improve sustained engagement:
+If activation improves but sustained engagement does not:
 
-→ Investigate whether the prompt experience is engaging in
-the moment but does not create a strong reason to return.
+→ Focus on the quality and relevance of the reflection experience
+rather than onboarding alone.
 
-If personalization does not improve engagement:
+If neither activation nor engagement improves:
 
-→ Reconsider the personalization mechanism, the relevance of
-the personality/mood inputs, or the broader reflection
-experience.
-
-If activation remains the dominant bottleneck:
-
-→ Prioritize getting more users into the first meaningful
-reflection experience before optimizing later-stage
-personalization.
+→ Reconsider the underlying value proposition or onboarding
+design.
 
 ---
 
-## Current Limitations
+## Current Limitation
 
-All data in this analysis is synthetic.
-
-The onboarding cohort comparison provides evidence of an
-association between the variant experience and stronger
-post-activation engagement, but does not by itself establish
-causality for a specific feature.
-
-The personalization comparison is observational because
-users were not randomly assigned to personalized versus
-non-personalized experiences.
-
-The non-personalized group is also substantially smaller
-than the personalized group:
-
-- Personalized: 901 users
-- Not personalized: 106 users
-
-Therefore, the personalization result should not be used to
-claim that personalized prompts increase or decrease
+The current synthetic dataset provides evidence that the variant
+is associated with stronger activation and post-activation
 engagement.
 
-The current dataset also does not directly record whether
-personality or mood information was actually incorporated
-into the generated prompt.
+It does not provide sufficient instrumentation to attribute that
+improvement specifically to personality + mood personalization.
 
-A future randomized experiment with explicit personalization
-instrumentation is therefore required to test the
-personalization hypothesis directly.
+Therefore, the next experiment should directly randomize
+personalization exposure and measure its effect on sustained
+engagement.

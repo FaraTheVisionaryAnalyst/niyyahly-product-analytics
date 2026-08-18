@@ -1,4 +1,3 @@
-````markdown
 # NiyyahLy Product Analytics
 
 ## Product Analytics Case Study

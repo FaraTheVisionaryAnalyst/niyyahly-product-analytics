@@ -1,3 +1,10 @@
+Yes — now that I have the actual README, I’d update it. The current version is already strong, but it **predates the 30-day engagement and personalization work**, so the biggest issue is that the README currently ends the story at retention.
+
+I would also correct the SQL/documentation structure so it reflects the new Stage 8 work.
+
+Here is the **full updated `README.md`**, ready to replace the current version. 
+
+````markdown
 # NiyyahLy Product Analytics
 
 ## Product Analytics Case Study
@@ -6,7 +13,7 @@ NiyyahLy is a synthetic digital reflection product designed to help users engage
 
 This project demonstrates an end-to-end Product Analytics workflow using synthetic product event data.
 
-The analysis focuses on the relationship between:
+The analysis focuses on the product journey:
 
 ```text
 Onboarding
@@ -14,9 +21,13 @@ Onboarding
 Activation
     ↓
 Retention
+    ↓
+30-Day Engagement
+    ↓
+Personalization Hypothesis
 ````
 
-The project also explores how onboarding design, user characteristics and product behavior relate to downstream engagement.
+The project explores how onboarding design, activation, user behavior and personalization relate to downstream engagement.
 
 ---
 
@@ -36,8 +47,10 @@ The analysis therefore investigates:
 2. Does it increase activation?
 3. Are activated users more likely to return?
 4. Does the onboarding experience relate to downstream retention?
-5. Are there meaningful differences across user segments?
-6. What product opportunity should be prioritized next?
+5. What does continued 30-day journal engagement look like?
+6. Is MBTI-based personalization associated with stronger engagement?
+7. What product opportunity should be prioritized next?
+8. What experiment is required to test the personalization hypothesis more rigorously?
 
 ---
 
@@ -119,7 +132,11 @@ Activation Analysis
         ↓
 Retention Analysis
         ↓
-Product Interpretation
+30-Day Engagement Analysis
+        ↓
+Personalization Exploration
+        ↓
+Product Recommendations
 ```
 
 The analysis is performed using BigQuery and SQL, with GitHub used for version control and documentation.
@@ -266,11 +283,11 @@ D1, D7, D14 and D30 are therefore separate retention measurements rather than se
 | D14              |            207 |          6.90% |
 | D30              |            120 |          4.00% |
 
-The measured retention rates are lower at later checkpoints in the synthetic dataset.
+These measurements provide a descriptive baseline of return behavior.
 
-However, these measurements should be treated primarily as **descriptive baseline metrics**.
+The later checkpoints have lower observed retention rates, but the data does not by itself explain why users stop returning.
 
-The data does not by itself establish why retention differs between checkpoints or whether the observed decline represents a specific churn mechanism.
+Therefore, D1, D7, D14 and D30 should not be interpreted as sequential churn stages.
 
 ---
 
@@ -304,8 +321,6 @@ However, this is an observational relationship and should not be interpreted as 
 
 The variant had higher observed retention across every measured window.
 
-This is directionally consistent with the earlier onboarding and activation findings.
-
 The absolute retention differences were:
 
 * D1: **+4.61 percentage points**
@@ -313,9 +328,9 @@ The absolute retention differences were:
 * D14: **+1.98 percentage points**
 * D30: **+1.63 percentage points**
 
-The cohort comparison should be interpreted as evidence of an observed association within the synthetic experiment dataset rather than definitive causal evidence.
+The cohort comparison is directionally consistent with the onboarding and activation findings.
 
-A real experiment would require appropriate statistical testing and experiment validation.
+However, retention differences should still be interpreted as observed cohort differences rather than definitive causal evidence.
 
 ---
 
@@ -330,7 +345,7 @@ Users who already knew their MBTI had higher observed retention across all measu
 
 The differences were relatively small compared with the much larger difference observed between activated and non-activated users.
 
-Therefore, MBTI familiarity is treated as a useful segmentation variable rather than evidence that MBTI familiarity itself causes higher retention.
+Therefore, MBTI familiarity is treated as a segmentation variable rather than evidence that MBTI familiarity itself causes higher retention.
 
 ---
 
@@ -374,69 +389,261 @@ Therefore, onboarding-path results are treated as descriptive behavioral analysi
 
 ---
 
-# Main Product Opportunity
+# 30-Day Post-Activation Engagement
 
-The clearest immediate product opportunity identified in the V1 analysis is **improving activation**.
+## Why a Second Engagement Measure Is Needed
 
-Of the 2,192 users who completed onboarding, 1,007 were classified as activated.
+Exact-day retention provides useful information about whether users returned on D1, D7, D14 or D30.
 
-This represents approximately **45.9% activation among onboarding completers**.
+However, it does not measure how consistently users used the journal during the entire 30-day period.
 
-The analysis therefore identifies a substantial transition gap between completing onboarding and reaching the core reflection experience.
+For example:
 
-Potential areas for investigation include:
+> A user who saves one journal on Day 30 is counted as D30 retained.
 
-* Clarity of the transition from onboarding to reflection
-* Whether the next action is obvious
-* Unnecessary friction before the first reflection
-* Communication of the value of the reflection experience
-* User motivation at the transition point
+This does **not** mean that the user saved 30 journals or used the product consistently throughout the month.
 
-The next product iteration should investigate this transition and determine whether improving it increases activation.
+Therefore, a separate post-activation engagement analysis was introduced.
+
+The population for this analysis is **activated users only**.
+
+Activation day is treated as Day 0.
+
+The 30-day engagement window therefore measures activity during Days 1–30 after activation.
 
 ---
 
-# Activation and Retention as Separate Product Questions
+## Active Journal Days
 
-The analysis suggests that activation and retention should not be treated as one continuous funnel.
+`journal_active_days_30d` measures the number of distinct calendar days on which an activated user saved at least one journal during the 30-day post-activation period.
 
-The activation journey is a sequential product journey:
+Among 1,007 activated users:
+
+| Metric                      |    Result |
+| --------------------------- | --------: |
+| Average active journal days |  **4.67** |
+| Median active journal days  |     **5** |
+| Minimum                     |     **0** |
+| Maximum                     |    **12** |
+| Active at least 1 day       | **99.1%** |
+| Active at least 3 days      | **86.0%** |
+| Active at least 7 days      | **17.6%** |
+| Active at least 10 days     |  **1.5%** |
+
+This indicates that most activated users returned at least occasionally, but relatively few demonstrated high-frequency journal usage.
+
+---
+
+## Longest Journal Streak
+
+`longest_journal_streak_30d` measures the longest sequence of consecutive calendar days on which an activated user saved at least one journal.
+
+Among activated users:
+
+| Metric                 |        Result |
+| ---------------------- | ------------: |
+| Average longest streak | **1.62 days** |
+| Median longest streak  |     **1 day** |
+| Maximum                |    **5 days** |
+| At least 1-day streak  |     **99.1%** |
+| At least 2-day streak  |     **49.7%** |
+| At least 3-day streak  |     **10.8%** |
+| At least 5-day streak  |      **0.2%** |
+
+The low median streak indicates that sustained consecutive daily behavior is currently uncommon.
+
+However, streak length should be treated as a supporting engagement metric rather than the primary product success metric.
+
+---
+
+## 30-Day Consistency
+
+The 30-day period is divided into four post-activation consistency periods:
 
 ```text
-Signup
-  ↓
-Onboarding
-  ↓
-Reflection experience
-  ↓
-Activation
+Period 1 → Days 1–7
+Period 2 → Days 8–14
+Period 3 → Days 15–21
+Period 4 → Days 22–30
 ```
 
-Retention is measured separately at specific calendar-day checkpoints:
+A user is considered active in a period if they save at least one journal during that period.
+
+This measures whether engagement is distributed across the month rather than concentrated in a short burst.
+
+Among activated users:
+
+| Metric                           | Control | Variant |
+| -------------------------------- | ------: | ------: |
+| Activated users                  |     456 |     551 |
+| Average active days              |    4.27 |    5.01 |
+| Median active days               |       4 |       5 |
+| Average longest streak           |    1.57 |    1.66 |
+| Median longest streak            |       1 |       2 |
+| Active across at least 3 periods |   60.1% |   72.1% |
+| Active across all 4 periods      |   18.2% |   31.4% |
+
+The variant showed stronger sustained engagement across the 30-day period.
+
+The difference in the percentage active across all four periods was:
+
+**+13.20 percentage points**
+
+A two-proportion z-test produced:
+
+**z = 4.79**
+
+This indicates a statistically significant difference in the synthetic experiment dataset.
+
+However, the result should still be interpreted in the context of the synthetic data and validated experiment design.
+
+---
+
+# Personalization Exploration
+
+## Product Hypothesis
+
+The next product hypothesis is:
+
+> Users who receive reflection prompts personalized using their personality profile and current mood may demonstrate stronger sustained engagement than users receiving non-personalized prompts.
+
+The expected mechanism is that more personally relevant reflection prompts may make users feel more understood and increase their motivation to continue using the reflection experience.
+
+---
+
+## Reconstructing Personalization Exposure
+
+`knows_mbti` alone is not a sufficient measure of personalization exposure.
+
+Among the 1,007 activated users, the MBTI-related onboarding paths were:
+
+| MBTI Path                          |     Users |
+| ---------------------------------- | --------: |
+| Already knew MBTI + self-selected  |       271 |
+| Already knew MBTI + completed test |       210 |
+| Did not know MBTI + completed test |       420 |
+| Skipped personality                |       106 |
+| **Total**                          | **1,007** |
+
+Therefore:
+
+**901 activated users** were classified as having an MBTI profile available for personalization.
+
+**106 activated users** were classified as not personalized because they explicitly skipped the personality step.
+
+This classification is based on the observed onboarding flow.
+
+It does not directly prove that a personalized prompt was generated or delivered.
+
+---
+
+## Exploratory Personalization Result
+
+Among activated users:
+
+| Personalization Group | Users | Average Active Journal Days | Active Across All 4 Periods |
+| --------------------- | ----: | --------------------------: | --------------------------: |
+| Personalized          |   901 |                        4.64 |                      24.31% |
+| Not personalized      |   106 |                        4.93 |                      34.91% |
+
+The personalization-exposed group did **not** show higher observed engagement.
+
+In fact:
+
+* Average active days were **4.64** vs **4.93**
+* All-four-period engagement was **24.31%** vs **34.91%**
+
+The observed difference therefore runs opposite to the original product hypothesis.
+
+However, this result should **not** be interpreted as evidence that personalization reduces engagement.
+
+There are two major limitations.
+
+### 1. Personalization exposure was not randomized
+
+Users entered the personalized or non-personalized path through onboarding behavior.
+
+Users who skip the personality step may differ from users who complete or provide their MBTI profile in ways that also affect engagement.
+
+Therefore:
 
 ```text
-Signup
-  │
-  ├── D1 journal activity?
-  │
-  ├── D7 journal activity?
-  │
-  ├── D14 journal activity?
-  │
-  └── D30 journal activity?
+Observed difference
+        ≠
+Causal effect of personalization
 ```
 
-Therefore, a user who does not save a journal on D7 is not necessarily a permanently lost user.
+### 2. The comparison group is small
 
-The current dataset provides useful baseline retention measurements, but it does not provide enough evidence by itself to explain the causes of later-stage retention differences.
+The non-personalized group contains only:
 
-The strongest current retention finding is the large difference between activated and non-activated users.
+**106 users**
+
+compared with:
+
+**901 personalized users**
+
+This imbalance further limits the reliability of the comparison.
+
+The result should therefore be treated as **exploratory evidence**, not as a product decision that personalization is harmful.
+
+---
+
+# Main Product Opportunities
+
+The current analysis identifies two immediate product opportunities.
+
+## Opportunity 1 — Improve Activation
+
+The largest early funnel loss occurs before users reach the core reflection experience.
+
+Of the:
+
+**2,192 onboarding completers**
+
+only:
+
+**1,007 activated**
+
+This represents:
+
+**45.9% activation among onboarding completers.**
+
+The immediate priority is therefore to improve the transition from onboarding completion into the first meaningful reflection experience.
+
+Potential areas for investigation include:
+
+* Clarity of the next action
+* Friction before the first reflection
+* Value communication
+* User motivation at the transition
+* Whether the reflection experience is immediately understandable
+
+---
+
+## Opportunity 2 — Improve Sustained Engagement
+
+Activation is strongly associated with subsequent retention, but activated users still demonstrate relatively shallow repeated usage.
+
+Among activated users:
+
+* Average active journal days: **4.67**
+* Median active journal days: **5**
+* 17.6% reached at least 7 active days
+* 1.5% reached at least 10 active days
+* Median longest streak: **1 day**
+
+This suggests that an important product objective is not simply getting users to return once.
+
+It is helping users develop a sustainable reflection habit.
+
+The 30-day consistency metric is therefore more informative for this objective than exact-day retention alone.
 
 ---
 
 # Product Interpretation
 
-The V1 analysis identifies two related but distinct product questions.
+The V1 analysis identifies three related but distinct product questions.
 
 ## Question 1: How do we get more users to experience the core product value?
 
@@ -444,77 +651,156 @@ The activation analysis shows a substantial gap between onboarding completion an
 
 Improving the onboarding-to-reflection transition should therefore be the immediate product priority.
 
-The objective is to increase the proportion of users who reach and experience the core NiyyahLy reflection journey.
+---
 
-## Question 2: What makes users continue engaging after experiencing the core product?
+## Question 2: What makes users continue engaging after activation?
 
-Activated users show substantially higher observed retention at D1, D7, D14 and D30.
+Activated users show substantially higher observed retention than non-activated users.
 
-This indicates that reaching the core product experience is strongly associated with subsequent engagement.
+The 30-day engagement analysis also shows that users who activate generally return at least occasionally, but sustained engagement remains limited.
 
-However, the current V1 data does not explain why some activated users return while others do not.
-
-Further behavioral analysis or experimentation would be required to understand the mechanisms behind continued engagement.
+The next product challenge is therefore to understand what creates repeated value after the first successful reflection experience.
 
 ---
 
-# Future Product Hypothesis: Personalization
+## Question 3: Does personalization increase sustained engagement?
 
-The next product hypothesis can build on the core NiyyahLy value proposition.
+The current observational personalization comparison does not show stronger engagement among users classified as personalized.
 
-The product can potentially combine:
+However, the result cannot establish causality because personalization was not randomly assigned.
 
-```text
-Personality profile
-        +
-Current mood
-        +
-Reflection topic
-        ↓
-Personalized reflection prompt
-```
-
-The hypothesis is:
-
-> Users who receive personality- and mood-informed reflection prompts may find the experience more relevant and engaging, leading to higher reflection engagement and subsequent retention.
-
-This hypothesis is **not proven by the current V1 analysis**.
-
-The current analysis only establishes that users who reach activation have substantially higher observed retention.
-
-A future controlled experiment would be required to determine whether personalization itself improves engagement and retention.
+Therefore, the current data does not prove or disprove the personalization hypothesis.
 
 ---
 
 # Recommended Product Roadmap
 
 ```text
-V1
-Understand the product funnel
-        ↓
-Identify activation opportunity
-        ↓
-Improve onboarding → reflection transition
-        ↓
-Measure activation improvement
-        ↓
+CURRENT V1
+    │
+    ├── Improve onboarding → reflection transition
+    │
+    ↓
+Increase activation
+    │
+    ↓
+Measure sustained post-activation engagement
+    │
+    ↓
 ────────────────────────────────
-Use retention as a downstream outcome
-        ↓
-Understand continued engagement
-        ↓
-Identify behavioral drivers of return
-        ↓
-────────────────────────────────
-Future Experiment
-Test personality + mood personalization
-        ↓
-Measure reflection engagement
-        ↓
-Measure D7 / D14 / D30 retention
+NEXT EXPERIMENT
+    │
+    ↓
+Randomize personalization
+    │
+    ├── Control
+    │     Generic reflection prompt
+    │
+    └── Variant
+          Personality + mood personalized prompt
+    │
+    ↓
+Measure 30-day engagement
+    │
+    ├── Primary:
+    │     Active across all 4 periods
+    │
+    └── Supporting:
+          Active journal days
+          D1 / D7 / D14 / D30 retention
+          Longest streak
 ```
 
-The sequence intentionally prioritizes activation before introducing the deeper personalization hypothesis.
+The sequence prioritizes activation first, then sustained engagement, and finally a controlled test of personalization.
+
+---
+
+# Recommended Future Experiment
+
+The next personalization experiment should randomly assign eligible users to:
+
+### Control
+
+Standard reflection prompt.
+
+### Variant
+
+Reflection prompt incorporating:
+
+* Personality information
+* Current mood
+* Reflection topic
+
+The experiment should keep all other aspects of the reflection experience as consistent as possible.
+
+The primary success metric should be:
+
+**Percentage of activated users active across all four 30-day consistency periods.**
+
+Supporting metrics should include:
+
+* Active journal days
+* D1 retention
+* D7 retention
+* D14 retention
+* D30 retention
+* Longest journal streak
+
+---
+
+# Required Future Instrumentation
+
+The product should explicitly record whether personalization was actually available and used.
+
+Recommended events or fields include:
+
+* `personality_context_available`
+* `mood_context_available`
+* `personality_context_used`
+* `mood_context_used`
+* `prompt_personalized`
+* `prompt_generation_completed`
+* `journal_saved`
+
+This would allow future analysis to distinguish between:
+
+```text
+Personality information exists
+        ↓
+Personality information available
+        ↓
+Personality information used
+        ↓
+Mood information used
+        ↓
+Prompt personalized
+        ↓
+Journal saved
+        ↓
+Repeat engagement
+```
+
+This instrumentation would provide a much stronger basis for evaluating the personalization hypothesis.
+
+---
+
+# Decision Framework
+
+If personalization produces a meaningful improvement in sustained engagement:
+
+→ Continue investing in personalized reflection.
+
+If personalization improves immediate prompt interaction but does not improve sustained engagement:
+
+→ Investigate whether the experience is engaging in the moment but does not create a strong reason to return.
+
+If personalization does not improve engagement in a properly randomized experiment:
+
+→ Reconsider the personalization mechanism, the relevance of personality and mood inputs, or the broader reflection experience.
+
+If activation remains the dominant bottleneck:
+
+→ Prioritize getting more users into the first meaningful reflection experience before optimizing later-stage personalization.
 
 ---
 
@@ -532,10 +818,18 @@ facts_events
 Analytical marts
         ├── mart_onboarding
         ├── mart_activation
-        └── mart_retention
+        ├── mart_retention
+        └── mart_30d_post_activation
 ```
 
 The analytical marts provide reusable tables for product analysis rather than repeatedly querying the raw event data.
+
+The 30-day post-activation engagement mart uses:
+
+* One row per activated user
+* Distinct journal-active days
+* Longest consecutive journal streak
+* Four consistency periods across the 30-day window
 
 ---
 
@@ -563,9 +857,14 @@ sql/
 │   ├── 01_create_mart_activation.sql
 │   └── 02_activation_analysis.sql
 │
-└── 05_retention/
-    ├── 01_create_mart_retention.sql
-    └── 02_retention_analysis.sql
+├── 05_retention/
+│   ├── 01_create_mart_retention.sql
+│   └── 02_retention_analysis.sql
+│
+└── 06_engagement/
+    ├── 01_create_mart_30d_post_activation.sql
+    ├── 02_30d_engagement_analysis.sql
+    └── 03_personalization_exposure.sql
 ```
 
 Detailed analysis documentation is stored in:
@@ -583,6 +882,7 @@ including:
 * `ONBOARDING_ANALYSIS.md`
 * `ACTIVATION_ANALYSIS.md`
 * `RETENTION_ANALYSIS.md`
+* `ENGAGEMENT_NEXT_STEPS.md`
 
 ---
 
@@ -590,7 +890,7 @@ including:
 
 The validated BigQuery outputs will be used to build a Tableau product analytics dashboard.
 
-The dashboard will focus on the product journey:
+The dashboard should focus on the product journey:
 
 ```text
 Onboarding
@@ -598,18 +898,23 @@ Onboarding
 Activation
     ↓
 Retention
+    ↓
+Sustained Engagement
 ```
 
-The visualization will emphasize:
+The visualization should emphasize:
 
 * Funnel progression
 * Control vs variant comparison
 * Activation performance
 * Retention checkpoints
-* Key user segments
-* Product opportunities
+* 30-day engagement
+* Consistency across the 30-day period
+* Key product opportunities
 
-The Tableau dashboard will be based on the validated analytical tables and documented metrics rather than directly connecting to raw event data.
+The personalization analysis should be presented as an **exploratory finding**, not as a causal experiment result.
+
+The Tableau dashboard should be based on validated analytical tables and documented metrics rather than directly connecting to raw event data.
 
 ---
 
@@ -617,7 +922,7 @@ The Tableau dashboard will be based on the validated analytical tables and docum
 
 This project uses synthetic data and is intended as a Product Analytics portfolio case study.
 
-The observed differences between cohorts should not be treated as definitive causal evidence.
+The observed differences between cohorts should not be treated as definitive causal evidence without appropriate experiment validation.
 
 A real-world experiment would require:
 
@@ -631,6 +936,15 @@ A real-world experiment would require:
 * Evaluation of potential confounding factors
 
 The onboarding-path analysis requires additional caution because users may select different paths within the variant experience.
+
+The personalization analysis has additional limitations:
+
+* Personalization exposure is inferred from onboarding behavior
+* The current dataset does not directly record personalized prompt delivery
+* The non-personalized comparison group contains only 106 activated users
+* Personalized and non-personalized users were not randomly assigned
+
+Therefore, the personalization comparison cannot establish a causal effect.
 
 Retention is measured using `journal_saved`, which represents meaningful reflection activity but does not capture every possible form of product engagement.
 
@@ -646,12 +960,36 @@ The V1 analysis suggests that the lower-friction onboarding experience is associ
 
 The clearest immediate product opportunity is improving the transition from onboarding completion into the core reflection experience.
 
-Activation is also strongly associated with subsequent retention, making it an important product milestone.
+Activation is strongly associated with subsequent retention, making it an important product milestone.
 
-At the same time, the retention analysis should be treated as a baseline descriptive view rather than sufficient evidence to explain the causes of later-stage engagement or churn.
+The 30-day engagement analysis adds an important perspective: activated users generally return at least occasionally, but sustained and repeated journal usage remains relatively limited.
 
-The next product iteration should therefore focus first on improving activation while using retention as a downstream outcome.
+The strongest experiment-level engagement signal is the difference in four-period consistency between the control and variant cohorts.
 
-Once the activation experience is improved, a future controlled experiment can investigate whether deeper personalization — particularly combining personality and current mood with reflection topics — increases reflection engagement and long-term retention.
+The exploratory personalization analysis does not show higher engagement among users classified as personalization-exposed. However, this comparison is observational and includes a much smaller non-personalized group, so it cannot establish whether personalization itself improves or reduces engagement.
 
-````
+The next product stage should therefore:
+
+1. Improve activation and the onboarding-to-reflection transition.
+2. Optimize for sustained post-activation engagement rather than single-day retention alone.
+3. Instrument personalization exposure directly.
+4. Run a randomized experiment comparing generic versus personality- and mood-personalized reflection prompts.
+5. Measure sustained 30-day engagement as the primary outcome.
+
+This creates a clear progression from:
+
+```text
+Understand the funnel
+        ↓
+Improve activation
+        ↓
+Improve sustained engagement
+        ↓
+Test personalization causally
+```
+
+The goal is not simply to increase the number of users who return once.
+
+The longer-term product goal is to create a reflection experience that users find sufficiently valuable and personally relevant to return to consistently over time.
+
+```

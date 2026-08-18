@@ -337,50 +337,60 @@ For that reason, milestone retention should not be used alone to judge the quali
 
 # Overall Retention Results
 
-The corrected retention analysis uses the **1,007 activated users** as the denominator.
+The corrected retention analysis uses the **1,007 activated users**
+as the denominator.
 
-The final D1, D7, D14 and D30 rates should be taken from the validated output of:
+| Retention Window | Retained Users | Retention Rate |
+| ---------------- | -------------: | -------------: |
+| D1               |            250 |         24.83% |
+| D7               |            214 |         21.25% |
+| D14              |            140 |         13.90% |
+| D30              |             84 |          8.34% |
 
-`sql/05_retention/02_retention_analysis.sql`
+Among activated users, 24.83% returned and saved a journal on the
+day immediately following activation.
 
-and not from the previous signup-based analysis.
+By D30, 8.34% of activated users saved a journal on the exact
+30-day milestone.
 
-This distinction is important because the previous retention table used all 3,000 signed-up users as the denominator.
-
-The corrected analysis measures:
-
-```text
-Retained activated users
-/
-Activated users
-```
-
-rather than:
-
-```text
-Retained signed-up users
-/
-All signed-up users
-```
-
+These are milestone retention measurements and should not be
+interpreted as continuous 30-day usage.
 ---
 
 # Retention by Experiment Cohort
 
-Retention can also be compared between:
+Among activated users, the variant showed higher D1 retention,
+but the difference largely disappeared at later milestones.
 
-* Control
-* Variant
+| Cohort  | Activated Users | D1 | D7 | D14 | D30 |
+| ------- | --------------: | -: | -: | ---: | ---: |
+| Control |             456 | 21.27% | 21.05% | 13.38% | 8.33% |
+| Variant |             551 | 27.77% | 21.42% | 14.34% | 8.35% |
 
-This comparison answers:
+The absolute differences were:
 
-> Among users who activated, does milestone retention differ between the two onboarding cohorts?
+* D1: **+6.50 percentage points**
+* D7: **+0.36 percentage points**
+* D14: **+0.96 percentage points**
+* D30: **+0.02 percentage points**
 
-This is a more focused question than comparing retention across all signed-up users.
+The most notable difference occurs immediately after activation.
 
-However, the result should still be interpreted as an observed cohort difference rather than definitive causal evidence for a specific onboarding feature.
+The variant had a 6.50 percentage-point higher D1 retention rate
+than the control.
 
-The experiment cohort comparison should be generated from the corrected activated-user retention mart.
+However, the difference largely converges by D7 and is effectively
+zero by D30.
+
+Therefore, the current data does not support the conclusion that
+the variant creates a durable long-term retention improvement.
+
+Instead, the result suggests that the variant may have improved
+early post-activation return behavior without producing a
+meaningful difference in exact-day D30 retention.
+
+These are observed cohort differences and should not automatically
+be interpreted as causal effects of the onboarding experience.
 
 ---
 

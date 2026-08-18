@@ -604,3 +604,127 @@ SELECT
 
 FROM
   cohort_metrics;
+
+-- ============================================================
+-- QUERY 8: Statistical Test - Active in All 4 Periods
+-- ============================================================
+--
+-- Business question:
+-- Is the observed difference in the percentage of activated
+-- users active across all four post-activation periods
+-- statistically distinguishable between control and variant?
+--
+-- Outcome:
+-- active_consistency_periods_30d = 4
+--
+-- Test:
+-- Two-proportion z-test
+--
+-- Important:
+-- This test evaluates association between experiment cohort
+-- and the binary engagement outcome.
+-- It does not by itself prove causality.
+-- ============================================================
+
+
+WITH cohort_counts AS (
+
+  SELECT
+
+    cohort,
+
+    COUNT(*) AS users,
+
+    COUNTIF(
+      active_consistency_periods_30d = 4
+    ) AS all_4_period_users
+
+  FROM
+    `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`
+
+  GROUP BY
+    cohort
+),
+
+metrics AS (
+
+  SELECT
+
+    MAX(
+      IF(cohort = 'variant', users, NULL)
+    ) AS variant_n,
+
+    MAX(
+      IF(cohort = 'control', users, NULL)
+    ) AS control_n,
+
+    MAX(
+      IF(cohort = 'variant', all_4_period_users, NULL)
+    ) AS variant_successes,
+
+    MAX(
+      IF(cohort = 'control', all_4_period_users, NULL)
+    ) AS control_successes
+
+  FROM
+    cohort_counts
+),
+
+proportions AS (
+
+  SELECT
+
+    *,
+
+    SAFE_DIVIDE(
+      variant_successes,
+      variant_n
+    ) AS variant_rate,
+
+    SAFE_DIVIDE(
+      control_successes,
+      control_n
+    ) AS control_rate,
+
+    SAFE_DIVIDE(
+      variant_successes + control_successes,
+      variant_n + control_n
+    ) AS pooled_rate
+
+  FROM
+    metrics
+)
+
+SELECT
+
+  variant_n,
+
+  control_n,
+
+  variant_successes,
+
+  control_successes,
+
+  variant_rate,
+
+  control_rate,
+
+  (variant_rate - control_rate) * 100
+    AS absolute_lift_pp,
+
+  (
+    (variant_rate - control_rate)
+    /
+    SQRT(
+      pooled_rate * (1 - pooled_rate)
+      *
+      (
+        SAFE_DIVIDE(1, variant_n)
+        +
+        SAFE_DIVIDE(1, control_n)
+      )
+    )
+  ) AS z_score
+
+FROM
+  proportions;

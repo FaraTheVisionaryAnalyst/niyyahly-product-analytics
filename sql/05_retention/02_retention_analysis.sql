@@ -4,14 +4,24 @@
 -- File: 02_retention_analysis.sql
 --
 -- Purpose:
--- Analyze user retention after signup using journal_saved
--- as the retained activity event.
+-- Analyze milestone retention among activated users.
 --
--- Retention windows:
+-- Population:
+-- Activated users only.
+--
+-- Retention definition:
+-- User saved at least one journal on the specified calendar
+-- day after activation.
+--
+-- Milestones:
 -- D1, D7, D14, D30
 --
--- Main product question:
--- Do users return to NiyyahLy after their initial experience?
+-- Important:
+-- These are milestone retention metrics.
+-- They do not measure continuous usage or streak behavior.
+--
+-- Continuous 30-day engagement is analyzed separately in:
+-- sql/06_engagement/02_30d_engagement_analysis.sql
 -- ============================================================
 
 
@@ -20,13 +30,25 @@
 -- ============================================================
 --
 -- Business question:
--- What percentage of users return and save a journal on
--- D1, D7, D14 and D30 after signup?
+-- Among activated users, what percentage returned and saved
+-- a journal on D1, D7, D14 and D30?
 -- ============================================================
 
 SELECT
 
-  COUNT(*) AS total_users,
+  COUNT(*) AS activated_users,
+
+  COUNTIF(retained_d1 = 1)
+    AS d1_retained_users,
+
+  COUNTIF(retained_d7 = 1)
+    AS d7_retained_users,
+
+  COUNTIF(retained_d14 = 1)
+    AS d14_retained_users,
+
+  COUNTIF(retained_d30 = 1)
+    AS d30_retained_users,
 
   SAFE_DIVIDE(
     COUNTIF(retained_d1 = 1),
@@ -57,15 +79,20 @@ FROM
 -- ============================================================
 --
 -- Business question:
--- Does retention differ between the control and variant
--- onboarding experiences?
+-- Does milestone retention differ between the control and
+-- variant onboarding experiences?
+--
+-- Interpretation:
+-- This is a cohort comparison.
+-- It does not by itself prove that a specific feature caused
+-- the difference.
 -- ============================================================
 
 SELECT
 
   cohort,
 
-  COUNT(*) AS users,
+  COUNT(*) AS activated_users,
 
   COUNTIF(retained_d1 = 1)
     AS d1_retained_users,
@@ -110,203 +137,92 @@ ORDER BY
 
 
 -- ============================================================
--- QUERY 3: Retention Among Activated Users
+-- QUERY 3: Retention Curve by Cohort
 -- ============================================================
 --
--- Business question:
--- Are users who reach activation more likely to return
--- and save a journal later?
+-- Purpose:
+-- Produce a Tableau-friendly long-format retention curve.
 --
--- This connects the activation analysis to retention.
+-- Each row represents one cohort and one retention milestone.
+--
+-- This is useful for visualizing:
+--
+-- D1 → D7 → D14 → D30
+--
+-- without duplicating the retention calculations in Tableau.
 -- ============================================================
 
-WITH retention_with_activation AS (
+WITH milestone_rates AS (
 
   SELECT
 
-    r.*,
+    cohort,
 
-    a.activated
+    SAFE_DIVIDE(
+      COUNTIF(retained_d1 = 1),
+      COUNT(*)
+    ) AS d1_retention_rate,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d7 = 1),
+      COUNT(*)
+    ) AS d7_retention_rate,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d14 = 1),
+      COUNT(*)
+    ) AS d14_retention_rate,
+
+    SAFE_DIVIDE(
+      COUNTIF(retained_d30 = 1),
+      COUNT(*)
+    ) AS d30_retention_rate
 
   FROM
-    `niyyahly-product-analytics.niyyahly_analytics.mart_retention` r
+    `niyyahly-product-analytics.niyyahly_analytics.mart_retention`
 
-  LEFT JOIN
-    `niyyahly-product-analytics.niyyahly_analytics.mart_activation` a
-
-  ON
-    r.user_id = a.user_id
+  GROUP BY
+    cohort
 )
 
 SELECT
-
-  activated,
-
-  COUNT(*) AS users,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d1 = 1),
-    COUNT(*)
-  ) AS d1_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d7 = 1),
-    COUNT(*)
-  ) AS d7_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d14 = 1),
-    COUNT(*)
-  ) AS d14_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d30 = 1),
-    COUNT(*)
-  ) AS d30_retention_rate
-
+  cohort,
+  'D1' AS milestone,
+  1 AS milestone_day,
+  d1_retention_rate AS retention_rate
 FROM
-  retention_with_activation
+  milestone_rates
 
-GROUP BY
-  activated
-
-ORDER BY
-  activated DESC;
-
-
--- ============================================================
--- QUERY 4: Retention by MBTI Familiarity
--- ============================================================
---
--- Business question:
--- Does retention differ between users who already know
--- their MBTI and users who do not?
--- ============================================================
+UNION ALL
 
 SELECT
-
-  knows_mbti,
-
-  COUNT(*) AS users,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d1 = 1),
-    COUNT(*)
-  ) AS d1_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d7 = 1),
-    COUNT(*)
-  ) AS d7_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d14 = 1),
-    COUNT(*)
-  ) AS d14_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d30 = 1),
-    COUNT(*)
-  ) AS d30_retention_rate
-
+  cohort,
+  'D7' AS milestone,
+  7 AS milestone_day,
+  d7_retention_rate AS retention_rate
 FROM
-  `niyyahly-product-analytics.niyyahly_analytics.mart_retention`
+  milestone_rates
 
-GROUP BY
-  knows_mbti
-
-ORDER BY
-  knows_mbti;
-
-
--- ============================================================
--- QUERY 5: Retention by Platform
--- ============================================================
---
--- Business question:
--- Does retention differ across Web, Android and iOS?
--- ============================================================
+UNION ALL
 
 SELECT
-
-  platform,
-
-  COUNT(*) AS users,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d1 = 1),
-    COUNT(*)
-  ) AS d1_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d7 = 1),
-    COUNT(*)
-  ) AS d7_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d14 = 1),
-    COUNT(*)
-  ) AS d14_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d30 = 1),
-    COUNT(*)
-  ) AS d30_retention_rate
-
+  cohort,
+  'D14' AS milestone,
+  14 AS milestone_day,
+  d14_retention_rate AS retention_rate
 FROM
-  `niyyahly-product-analytics.niyyahly_analytics.mart_retention`
+  milestone_rates
 
-GROUP BY
-  platform
-
-ORDER BY
-  platform;
-
-
--- ============================================================
--- QUERY 6: Retention by Onboarding Path
--- ============================================================
---
--- Business question:
--- Does retention differ across the different onboarding
--- paths?
---
--- Important:
--- onboarding_path is not an independent experiment dimension.
--- It is a breakdown of behavior within the onboarding design.
--- ============================================================
+UNION ALL
 
 SELECT
-
-  onboarding_path,
-
-  COUNT(*) AS users,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d1 = 1),
-    COUNT(*)
-  ) AS d1_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d7 = 1),
-    COUNT(*)
-  ) AS d7_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d14 = 1),
-    COUNT(*)
-  ) AS d14_retention_rate,
-
-  SAFE_DIVIDE(
-    COUNTIF(retained_d30 = 1),
-    COUNT(*)
-  ) AS d30_retention_rate
-
+  cohort,
+  'D30' AS milestone,
+  30 AS milestone_day,
+  d30_retention_rate AS retention_rate
 FROM
-  `niyyahly-product-analytics.niyyahly_analytics.mart_retention`
-
-GROUP BY
-  onboarding_path
+  milestone_rates
 
 ORDER BY
-  onboarding_path;
+  cohort,
+  milestone_day;

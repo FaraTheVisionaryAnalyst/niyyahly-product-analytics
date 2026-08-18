@@ -3,14 +3,61 @@
 -- Stage 8: 30-Day Post-Activation Engagement
 -- File: 02_30d_engagement_analysis.sql
 --
--- Query 1:
--- Retrieve distinct journal-active days for activated users.
+-- Purpose:
+-- Analyze how activated users continue to use the NiyyahLy
+-- reflection experience during the 30 days following activation.
+--
+-- Main product question:
+-- After users reach activation, do they continue using the
+-- journal over time?
+--
+-- Engagement dimensions:
+-- 1. Frequency
+--    How many distinct days do users save a journal?
+--
+-- 2. Streak
+--    How many consecutive days do users save a journal?
+--
+-- 3. Consistency
+--    Across how many parts of the 30-day period do users
+--    return and save a journal?
+--
+-- Population:
+-- Activated users only.
+--
+-- Important:
+-- Activation day is treated as Day 0.
+-- Post-activation engagement begins on Day 1.
+-- ============================================================
+
+
+
+-- ============================================================
+-- FOUNDATION / VALIDATION
+-- ============================================================
+
+
+-- ============================================================
+-- QUERY 1: Journal-Active Dates
+-- ============================================================
+--
+-- Business question:
+-- What actual dates did activated users save a journal during
+-- the 30 days following activation?
 --
 -- Purpose:
 -- Establish the user-level activity dates needed to calculate:
+--
 -- 1. Active journal days
 -- 2. Longest journal streak
--- 3. Active weeks
+-- 3. Active consistency periods
+--
+-- Grain:
+-- One row per user per journal-active date.
+--
+-- Important:
+-- Multiple journal saves on the same date count as one
+-- journal-active day.
 -- ============================================================
 
 
@@ -67,6 +114,8 @@ ORDER BY
   user_id,
   journal_date;
 
+
+
 -- ============================================================
 -- QUERY 2: Longest Journal Streak
 -- ============================================================
@@ -78,6 +127,10 @@ ORDER BY
 -- Metric:
 -- Longest number of consecutive calendar days on which
 -- the user saved at least one journal.
+--
+-- Purpose:
+-- Measure consecutive-day usage separately from overall
+-- journal frequency.
 -- ============================================================
 
 
@@ -186,6 +239,8 @@ GROUP BY
 ORDER BY
   user_id;
 
+
+
 -- ============================================================
 -- QUERY 3: Post-Activation Consistency Periods
 -- ============================================================
@@ -203,7 +258,12 @@ ORDER BY
 --
 -- Metric:
 -- Number of the four periods containing at least one
--- journal_saved event.
+-- journal-active day.
+--
+-- Purpose:
+-- Measure whether journal usage is distributed across the
+-- post-activation period rather than concentrated near the
+-- beginning.
 -- ============================================================
 
 
@@ -300,6 +360,13 @@ GROUP BY
 ORDER BY
   user_id;
 
+
+
+-- ============================================================
+-- OVERALL ENGAGEMENT
+-- ============================================================
+
+
 -- ============================================================
 -- QUERY 4: Overall Post-Activation Engagement
 -- ============================================================
@@ -370,6 +437,7 @@ FROM
   `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`;
 
 
+
 -- ============================================================
 -- QUERY 5: Overall Post-Activation Streak
 -- ============================================================
@@ -432,6 +500,13 @@ SELECT
 
 FROM
   `niyyahly-product-analytics.niyyahly_analytics.mart_30d_post_activation`;
+
+
+
+-- ============================================================
+-- EXPERIMENT ANALYSIS
+-- ============================================================
+
 
 -- ============================================================
 -- QUERY 6: Post-Activation Engagement by Experiment Cohort
@@ -503,6 +578,8 @@ GROUP BY
 ORDER BY
   cohort;
 
+
+
 -- ============================================================
 -- QUERY 7: Cohort Engagement Differences
 -- ============================================================
@@ -512,6 +589,10 @@ ORDER BY
 -- engagement between variant and control?
 --
 -- Variant is compared against control.
+--
+-- Purpose:
+-- Translate the cohort results into absolute differences
+-- that can be used for product interpretation.
 -- ============================================================
 
 
@@ -605,25 +686,30 @@ SELECT
 FROM
   cohort_metrics;
 
+
+
 -- ============================================================
 -- QUERY 8: Statistical Test - Active in All 4 Periods
 -- ============================================================
 --
 -- Business question:
--- Is the observed difference in the percentage of activated
--- users active across all four post-activation periods
--- statistically distinguishable between control and variant?
+-- Is the difference in sustained post-activation engagement
+-- between control and variant statistically significant?
 --
 -- Outcome:
--- active_consistency_periods_30d = 4
+-- User active in all four post-activation periods.
 --
 -- Test:
--- Two-proportion z-test
+-- Two-proportion z-test.
+--
+-- Purpose:
+-- Test whether the observed difference in the proportion
+-- of users active across all four periods is larger than
+-- would be expected from sampling variation alone.
 --
 -- Important:
--- This test evaluates association between experiment cohort
--- and the binary engagement outcome.
--- It does not by itself prove causality.
+-- This test evaluates the difference between the cohorts.
+-- It does not by itself establish causality.
 -- ============================================================
 
 
@@ -728,4 +814,3 @@ SELECT
 
 FROM
   proportions;
-

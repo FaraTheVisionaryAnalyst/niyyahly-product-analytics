@@ -38,7 +38,7 @@ The analysis therefore investigates:
 
 1. Does the lower-friction onboarding experience improve onboarding completion?
 2. Does it increase activation?
-3. Are activated users more likely to return?
+3. Once users activate, do they return to the product?
 4. Does the onboarding experience relate to downstream retention?
 5. What does continued 30-day journal engagement look like?
 6. Is MBTI-based personalization associated with stronger engagement?
@@ -236,149 +236,178 @@ The analysis therefore provides directional evidence that the lower-friction onb
 
 ## Product Question
 
-Do users return to NiyyahLy after their initial product experience?
+Once users reach activation, do they return to NiyyahLy and save journals again?
 
-Retention is measured using `journal_saved` as the meaningful core-product activity.
+Retention is now measured **among activated users only**.
 
-The retention windows analyzed are:
+This is an important change from the earlier signup-based retention analysis.
 
-* D1
-* D7
-* D14
-* D30
+The retention population consists of:
 
-### Important Retention Definition
+**1,007 activated users**
 
-Retention is calculated using **calendar days after signup**, not a rolling 24-hour window.
+Activation is defined by the user's first `journal_saved` event.
+
+Therefore:
+
+```text
+Activation = Day 0
+D1         = 1 day after activation
+D7         = 7 days after activation
+D14        = 14 days after activation
+D30        = 30 days after activation
+```
+
+The retention mart contains **one row per activated user**.
+
+---
+
+## Retention Definition
+
+A user is considered retained at a milestone if they save at least one journal on that specific calendar day after activation.
 
 For example:
 
 ```text
-Signup: January 1
-D1:     January 2
-D7:     January 8
-D14:    January 15
-D30:    January 31
+Activation: January 1
+
+D1:  January 2
+D7:  January 8
+D14: January 15
+D30: January 31
 ```
 
-A user is considered retained for a particular window when they have a `journal_saved` event on that specified calendar day.
+A user who saves multiple journals on D30 is still counted as **one D30-retained user**.
 
-D1, D7, D14 and D30 are therefore separate retention measurements rather than sequential stages of a funnel.
+A user who saves one journal on D30 is also counted as **one D30-retained user**.
+
+Therefore:
+
+> D30 retention does not mean 30 journals, 30 active days, or a 30-day streak.
+
+It is a **milestone retention measurement**, not a continuous-engagement measurement.
+
+---
+
+## Why Retention and Engagement Are Separate
+
+Milestone retention answers:
+
+> Do activated users return at specific points after activation?
+
+The 30-day engagement analysis answers:
+
+> Do activated users continue using the journal throughout the 30-day period?
+
+These are different questions.
+
+```text
+RETENTION
+
+Activation
+    ↓
+D1
+    ↓
+D7
+    ↓
+D14
+    ↓
+D30
+```
+
+versus:
+
+```text
+SUSTAINED ENGAGEMENT
+
+Activation
+    ↓
+Days 1–30
+    ↓
+Active days
+Longest streak
+4-period consistency
+```
+
+A user can be D30 retained while having very little activity during the rest of the 30-day period.
+
+For that reason, milestone retention should not be used alone to judge the quality of the journal experience.
 
 ---
 
 # Overall Retention Results
 
-| Retention Window | Retained Users | Retention Rate |
-| ---------------- | -------------: | -------------: |
-| D1               |            334 |         11.13% |
-| D7               |            296 |          9.87% |
-| D14              |            207 |          6.90% |
-| D30              |            120 |          4.00% |
+The corrected retention analysis uses the **1,007 activated users** as the denominator.
 
-These measurements provide a descriptive baseline of return behavior.
+The final D1, D7, D14 and D30 rates should be taken from the validated output of:
 
-The later checkpoints have lower observed retention rates, but the data does not by itself explain why users stop returning.
+`sql/05_retention/02_retention_analysis.sql`
 
-Therefore, D1, D7, D14 and D30 should not be interpreted as sequential churn stages.
+and not from the previous signup-based analysis.
 
----
+This distinction is important because the previous retention table used all 3,000 signed-up users as the denominator.
 
-# Activation and Retention Relationship
+The corrected analysis measures:
 
-One of the strongest patterns in the analysis is the difference in retention between activated and non-activated users.
+```text
+Retained activated users
+/
+Activated users
+```
 
-| User Group    |     D1 |     D7 |    D14 |   D30 |
-| ------------- | -----: | -----: | -----: | ----: |
-| Activated     | 24.83% | 21.25% | 13.90% | 8.34% |
-| Not activated |  4.21% |  4.11% |  3.36% | 1.81% |
+rather than:
 
-Activated users had substantially higher observed retention at every measured checkpoint.
-
-For example, D1 retention among activated users was **24.83%**, compared with **4.21%** among users who did not activate.
-
-At D30, the corresponding rates were **8.34%** and **1.81%**.
-
-This suggests a strong association between reaching the core reflection experience and subsequent engagement.
-
-However, this is an observational relationship and should not be interpreted as proof that activation itself causes higher retention.
+```text
+Retained signed-up users
+/
+All signed-up users
+```
 
 ---
 
 # Retention by Experiment Cohort
 
-| Cohort  |     D1 |     D7 |   D14 |   D30 |
-| ------- | -----: | -----: | ----: | ----: |
-| Control |  8.84% |  8.50% | 5.91% | 3.19% |
-| Variant | 13.44% | 11.24% | 7.89% | 4.82% |
+Retention can also be compared between:
 
-The variant had higher observed retention across every measured window.
+* Control
+* Variant
 
-The absolute retention differences were:
+This comparison answers:
 
-* D1: **+4.61 percentage points**
-* D7: **+2.73 percentage points**
-* D14: **+1.98 percentage points**
-* D30: **+1.63 percentage points**
+> Among users who activated, does milestone retention differ between the two onboarding cohorts?
 
-The cohort comparison is directionally consistent with the onboarding and activation findings.
+This is a more focused question than comparing retention across all signed-up users.
 
-However, retention differences should still be interpreted as observed cohort differences rather than definitive causal evidence.
+However, the result should still be interpreted as an observed cohort difference rather than definitive causal evidence for a specific onboarding feature.
+
+The experiment cohort comparison should be generated from the corrected activated-user retention mart.
 
 ---
 
-# Retention by MBTI Familiarity
+# Retention Interpretation
 
-| MBTI Familiarity | Users |     D1 |     D7 |   D14 |   D30 |
-| ---------------- | ----: | -----: | -----: | ----: | ----: |
-| Do not know MBTI | 1,689 | 10.42% |  9.00% | 5.92% | 3.73% |
-| Know MBTI        | 1,311 | 12.05% | 10.98% | 8.16% | 4.35% |
+The D1, D7, D14 and D30 measurements should not be interpreted as sequential funnel stages.
 
-Users who already knew their MBTI had higher observed retention across all measured windows.
+For example:
 
-The differences were relatively small compared with the much larger difference observed between activated and non-activated users.
+```text
+D1 = 25%
+D7 = 20%
+D14 = 14%
+D30 = 8%
+```
 
-Therefore, MBTI familiarity is treated as a segmentation variable rather than evidence that MBTI familiarity itself causes higher retention.
+does not mean that exactly 25% moved to D7 and then 20% of those users moved to D14.
 
----
+Each milestone has its own definition:
 
-# Retention by Platform
+> Did the activated user save at least one journal on this specific calendar day?
 
-| Platform | Users |     D1 |     D7 |   D14 |   D30 |
-| -------- | ----: | -----: | -----: | ----: | ----: |
-| Android  | 1,253 | 11.41% |  9.58% | 7.50% | 3.67% |
-| iOS      | 1,463 | 11.21% |  9.84% | 6.63% | 4.17% |
-| Web      |   284 |  9.51% | 11.27% | 5.63% | 4.58% |
+The later checkpoints may have smaller populations and therefore should be interpreted cautiously.
 
-Retention was broadly similar across platforms.
+In particular, D30 retention should not be used by itself to conclude that long-term engagement is poor or strong.
 
-The platform with the highest observed retention varied across the different retention windows.
-
-No consistent platform-specific retention problem was identified.
-
-The Web population is substantially smaller than the Android and iOS populations, so differences involving Web should be interpreted cautiously.
-
----
-
-# Retention by Onboarding Path
-
-| Onboarding Path  | Users |     D1 |     D7 |   D14 |   D30 |
-| ---------------- | ----: | -----: | -----: | ----: | ----: |
-| `mandatory_test` | 1,505 |  8.84% |  8.50% | 5.91% | 3.19% |
-| `self_select`    |   649 | 14.64% | 13.25% | 9.40% | 5.55% |
-| `test_or_skip`   |   846 | 12.53% |  9.69% | 6.74% | 4.26% |
-
-Users in the `self_select` path had the highest observed retention across all measured windows.
-
-Both variant paths had higher observed retention than the `mandatory_test` control path.
-
-However, these paths are not three independent randomized experiment groups.
-
-The `mandatory_test` path corresponds to the control experience, while `self_select` and `test_or_skip` occur within the variant experience.
-
-Users may also select different paths based on their own characteristics or preferences.
-
-Therefore, onboarding-path results are treated as descriptive behavioral analysis rather than evidence that a particular path causes higher retention.
+The 30-day engagement analysis provides the additional context required to evaluate sustained usage.
 
 ---
 
@@ -402,7 +431,7 @@ The population for this analysis is **activated users only**.
 
 Activation day is treated as Day 0.
 
-The 30-day engagement window therefore measures activity during Days 1–30 after activation.
+The 30-day engagement window measures activity during Days 1–30 after activation.
 
 ---
 
@@ -488,7 +517,7 @@ A two-proportion z-test produced:
 
 This indicates a statistically significant difference in the synthetic experiment dataset.
 
-However, the result should still be interpreted in the context of the synthetic data and validated experiment design.
+However, the result should still be interpreted as an observed cohort difference and not automatically attributed to a specific product feature.
 
 ---
 
@@ -504,81 +533,66 @@ The expected mechanism is that more personally relevant reflection prompts may m
 
 ---
 
-## Reconstructing Personalization Exposure
+## Personalization Exposure
 
 `knows_mbti` alone is not a sufficient measure of personalization exposure.
 
-Among the 1,007 activated users, the MBTI-related onboarding paths were:
+Users who initially do not know their MBTI may:
 
-| MBTI Path                          |     Users |
-| ---------------------------------- | --------: |
-| Already knew MBTI + self-selected  |       271 |
-| Already knew MBTI + completed test |       210 |
-| Did not know MBTI + completed test |       420 |
-| Skipped personality                |       106 |
-| **Total**                          | **1,007** |
+* complete the personality test
+* receive an MBTI result
+* subsequently become eligible for personalized content
 
-Therefore:
+Users who already know their MBTI may also select their MBTI directly.
 
-**901 activated users** were classified as having an MBTI profile available for personalization.
-
-**106 activated users** were classified as not personalized because they explicitly skipped the personality step.
-
-This classification is based on the observed onboarding flow.
-
-It does not directly prove that a personalized prompt was generated or delivered.
+Therefore, MBTI familiarity should not be treated as a direct proxy for whether a personalized prompt was actually delivered.
 
 ---
 
 ## Exploratory Personalization Result
 
-Among activated users:
+The current analysis identifies:
 
-| Personalization Group | Users | Average Active Journal Days | Active Across All 4 Periods |
-| --------------------- | ----: | --------------------------: | --------------------------: |
-| Personalized          |   901 |                        4.64 |                      24.31% |
-| Not personalized      |   106 |                        4.93 |                      34.91% |
+| Personalization Group | Activated Users | Average Active Journal Days | Active Across All 4 Periods |
+| --------------------- | --------------: | --------------------------: | --------------------------: |
+| Personalized          |             901 |                        4.64 |                      24.31% |
+| Not personalized      |             106 |                        4.93 |                      34.91% |
 
-The personalization-exposed group did **not** show higher observed engagement.
+The observed result does not support the original hypothesis descriptively.
 
-In fact:
+However, this should **not** be interpreted as evidence that personalization reduces engagement.
 
-* Average active days were **4.64** vs **4.93**
-* All-four-period engagement was **24.31%** vs **34.91%**
+There are two important limitations.
 
-The observed difference therefore runs opposite to the original product hypothesis.
+### 1. Exposure was not randomized
 
-However, this result should **not** be interpreted as evidence that personalization reduces engagement.
+Users did not randomly enter the personalized and non-personalized groups.
 
-There are two major limitations.
+The observed comparison is therefore:
 
-### 1. Personalization exposure was not randomized
+```text
+Personalization exposure
+        +
+User characteristics
+        +
+User onboarding behavior
+        ↓
+Observed engagement
+```
 
-Users entered the personalized or non-personalized path through onboarding behavior.
-
-Users who skip the personality step may differ from users who complete or provide their MBTI profile in ways that also affect engagement.
+rather than a clean randomized experiment.
 
 Therefore:
 
-```text
-Observed difference
-        ≠
-Causal effect of personalization
-```
+> Observed difference ≠ causal effect.
 
 ### 2. The comparison group is small
 
-The non-personalized group contains only:
+Only **106 activated users** were classified as not personalized, compared with **901 personalized users**.
 
-**106 users**
+The substantial group imbalance further limits the reliability of the comparison.
 
-compared with:
-
-**901 personalized users**
-
-This imbalance further limits the reliability of the comparison.
-
-The result should therefore be treated as **exploratory evidence**, not as a product decision that personalization is harmful.
+The personalization result should therefore be treated as **exploratory evidence only**.
 
 ---
 
@@ -616,7 +630,9 @@ Potential areas for investigation include:
 
 ## Opportunity 2 — Improve Sustained Engagement
 
-Activation is strongly associated with subsequent retention, but activated users still demonstrate relatively shallow repeated usage.
+Activation is associated with substantially stronger downstream return behavior.
+
+However, activated users still demonstrate relatively shallow repeated usage.
 
 Among activated users:
 
@@ -630,7 +646,7 @@ This suggests that an important product objective is not simply getting users to
 
 It is helping users develop a sustainable reflection habit.
 
-The 30-day consistency metric is therefore more informative for this objective than exact-day retention alone.
+The 30-day consistency metric is therefore particularly useful for evaluating this objective.
 
 ---
 
@@ -648,11 +664,13 @@ Improving the onboarding-to-reflection transition should therefore be the immedi
 
 ## Question 2: What makes users continue engaging after activation?
 
-Activated users show substantially higher observed retention than non-activated users.
+Activated users are the appropriate population for evaluating post-activation retention and engagement.
 
-The 30-day engagement analysis also shows that users who activate generally return at least occasionally, but sustained engagement remains limited.
+The retention analysis measures whether they return at specific milestones.
 
-The next product challenge is therefore to understand what creates repeated value after the first successful reflection experience.
+The 30-day engagement analysis measures whether they continue using the journal throughout the month.
+
+The second question is particularly important because a single D30 return does not establish a sustained habit.
 
 ---
 
@@ -817,6 +835,15 @@ Analytical marts
 
 The analytical marts provide reusable tables for product analysis rather than repeatedly querying the raw event data.
 
+The retention mart contains:
+
+* One row per activated user
+* Activation date
+* D1 retention flag
+* D7 retention flag
+* D14 retention flag
+* D30 retention flag
+
 The 30-day post-activation engagement mart uses:
 
 * One row per activated user
@@ -939,23 +966,29 @@ The personalization analysis has additional limitations:
 
 Therefore, the personalization comparison cannot establish a causal effect.
 
-Retention is measured using `journal_saved`, which represents meaningful reflection activity but does not capture every possible form of product engagement.
+Retention is measured using `journal_saved`, which represents meaningful reflection activity.
 
 D1, D7, D14 and D30 are separate calendar-day retention measurements rather than sequential churn stages.
 
-The relatively small number of retained users at later checkpoints also limits the strength of conclusions that can be drawn about long-term retention behavior.
+The later retention checkpoints should be interpreted cautiously because fewer users remain active at those specific milestones.
+
+Most importantly, milestone retention should not be interpreted as a measure of continuous 30-day product usage.
+
+The 30-day engagement analysis provides the stronger evidence for repeated usage over the full post-activation period.
 
 ---
 
 # Conclusion
 
-The V1 analysis suggests that the lower-friction onboarding experience is associated with higher onboarding completion, activation and observed retention.
+The V1 analysis suggests that the lower-friction onboarding experience is associated with higher onboarding completion and activation.
 
 The clearest immediate product opportunity is improving the transition from onboarding completion into the core reflection experience.
 
-Activation is strongly associated with subsequent retention, making it an important product milestone.
+Once users activate, milestone retention provides a useful view of whether they return at specific points after their first meaningful experience.
 
-The 30-day engagement analysis adds an important perspective: activated users generally return at least occasionally, but sustained and repeated journal usage remains relatively limited.
+However, milestone retention alone does not tell us whether users develop a sustained journaling habit.
+
+The 30-day engagement analysis therefore adds an important second layer by measuring active days, streak behavior and consistency across the month.
 
 The strongest experiment-level engagement signal is the difference in four-period consistency between the control and variant cohorts.
 
